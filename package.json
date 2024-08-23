@@ -1,0 +1,31 @@
+{
+    "name": "semaphore-boilerplate",
+    "description": "A simple DApp to use as a starting point for your project.",
+    "license": "MIT",
+    "repository": "git@github.com:semaphore-protocol/boilerplate.git",
+    "homepage": "https://github.com/semaphore-protocol/boilerplate",
+    "bugs": "https://github.com/semaphore-protocol/boilerplate/issues",
+    "private": true,
+    "scripts": {
+        "dev": "yarn workspaces foreach -A -pi run dev",
+        "dev:web-app": "yarn workspace web-app dev",
+        "dev:contracts": "yarn workspace contracts dev",
+        "prettier": "prettier -c .",
+        "prettier:write": "prettier -w ."
+    },
+    "keywords": [
+        "javascript",
+        "typescript",
+        "monorepo",
+        "zero-knowledge",
+        "semaphore",
+        "boilerplate"
+    ],
+    "workspaces": [
+        "apps/*"
+    ],
+    "packageManager": "yarn@4.1.0",
+    "devDependencies": {
+        "prettier": "^2.5.1"
+    }
+}
