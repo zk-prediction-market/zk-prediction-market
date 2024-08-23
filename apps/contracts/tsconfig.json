@@ -10,6 +10,6 @@
         "outDir": "dist",
         "typeRoots": ["node_modules/@types", "types"]
     },
-    "include": ["tasks/**/*", "test/**/*", "typechain-types/**/*"],
+    "include": ["tasks/**/*", "test/**/*", "typechain-types/**/*", "test_archive/merkle-test.js"],
     "files": ["./hardhat.config.ts"]
 }

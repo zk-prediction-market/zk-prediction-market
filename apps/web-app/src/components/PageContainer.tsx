@@ -2,9 +2,13 @@
 
 import { useLogContext } from "@/context/LogContext"
 import shortenString from "@/utils/shortenString"
-import { Container, HStack, Icon, IconButton, Link, Spinner, Stack, Text } from "@chakra-ui/react"
-import { usePathname } from "next/navigation"
-import { FaGithub } from "react-icons/fa"
+import { Box, Button, Container, Heading, HStack, Icon, IconButton, Link, Spinner, Stack, Text } from "@chakra-ui/react"
+import { Identity } from "@semaphore-protocol/core"
+import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import useMyWeb3Modal from "@/hooks/useMyWeb3Modal"
+import { WalletOptions } from "./wallet-options"
+import { ConnectWallet } from "./ConnectWallet"
 
 export default function PageContainer({
     children
@@ -13,6 +17,18 @@ export default function PageContainer({
 }>) {
     const pathname = usePathname()
     const { log } = useLogContext()
+    const router = useRouter()
+    const [_identity, setIdentity] = useState<Identity>()
+    // const { open } = useMyWeb3Modal()
+
+    useEffect(() => {
+        const privateKey = localStorage.getItem("identity")
+
+        if (privateKey) {
+            const identity = Identity.import(privateKey)
+            setIdentity(identity)
+        }
+    }, [])
 
     function getExplorerLink(network: string, address: string) {
         switch (network) {
@@ -27,34 +43,29 @@ export default function PageContainer({
 
     return (
         <>
-            <HStack align="center" justify="right" p="2">
-                <Link
-                    href={getExplorerLink(
-                        process.env.NEXT_PUBLIC_DEFAULT_NETWORK as string,
-                        process.env.NEXT_PUBLIC_FEEDBACK_CONTRACT_ADDRESS as string
-                    )}
-                    isExternal
-                >
-                    <Text>{shortenString(process.env.NEXT_PUBLIC_FEEDBACK_CONTRACT_ADDRESS as string, [6, 4])}</Text>
+            <HStack align="center" justify="space-between" p="2" mb="8">
+                <Link href="/" _hover={{ textDecoration: "none" }}>
+                    <Heading mt="2" ml="4" size="lg" color="white" _hover={{ opacity: 0.8 }}>
+                        ZK Prediction Markets
+                    </Heading>
                 </Link>
-                <Link href="https://github.com/semaphore-protocol/boilerplate" isExternal>
-                    <IconButton
-                        aria-label="Github repository"
-                        variant="link"
-                        py="3"
-                        color="text.100"
-                        icon={<Icon boxSize={6} as={FaGithub} />}
-                    />
-                </Link>
+                <HStack mt="2" mr="4" spacing="4">
+                    <Button
+                        onClick={() => {
+                            router.push("/signUp")
+                        }}
+                    >
+                        for Traders
+                    </Button>
+                    <ConnectWallet />
+                </HStack>
             </HStack>
 
-            <Container maxW="xl" flex="1" display="flex" alignItems="center">
-                <Stack pt="8" pb="24" display="flex" width="100%">
-                    {children}
-                </Stack>
+            <Container maxW="100%" display="flex" justifyContent="center">
+                {children}
             </Container>
 
-            <HStack
+            {/* <HStack
                 flexBasis="56px"
                 borderTopWidth="1px"
                 borderTopColor="text.600"
@@ -66,7 +77,7 @@ export default function PageContainer({
             >
                 {log.endsWith("...") && <Spinner color="primary.400" />}
                 <Text>{log || `Current step: ${pathname}`}</Text>
-            </HStack>
+            </HStack> */}
         </>
     )
 }

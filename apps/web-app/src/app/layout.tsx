@@ -3,6 +3,10 @@ import type { Metadata } from "next"
 import Providers from "./providers"
 import { LogContextProvider } from "@/context/LogContext"
 import { SemaphoreContextProvider } from "@/context/SemaphoreContext"
+import { headers } from "next/headers"
+import { cookieToInitialState } from "wagmi"
+import { config } from "@/config/config"
+// import Web3ModalProvider from "@/context"
 
 export const metadata: Metadata = {
     title: "Semaphore Demo",
@@ -29,16 +33,19 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    const initialState = cookieToInitialState(config, headers().get("cookie"))
     return (
         <html lang="en" suppressHydrationWarning>
             <body suppressHydrationWarning>
-                <Providers>
+                {/* <Web3ModalProvider initialState={initialState}> */}
+                <Providers initialState={initialState}>
                     <SemaphoreContextProvider>
                         <LogContextProvider>
                             <PageContainer>{children}</PageContainer>
                         </LogContextProvider>
                     </SemaphoreContextProvider>
                 </Providers>
+                {/* </Web3ModalProvider> */}
             </body>
         </html>
     )
