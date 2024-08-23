@@ -1,6 +1,7 @@
 import { Contract, InfuraProvider, JsonRpcProvider, Wallet } from "ethers"
 import { NextRequest } from "next/server"
 import Feedback from "../../../../contract-artifacts/Feedback.json"
+import { parseGloth16Proof } from "@/utils/parseGloth16Proof"
 
 export async function POST(req: NextRequest) {
     if (typeof process.env.ETHEREUM_PRIVATE_KEY !== "string") {
@@ -20,10 +21,48 @@ export async function POST(req: NextRequest) {
     const signer = new Wallet(ethereumPrivateKey, provider)
     const contract = new Contract(contractAddress, Feedback.abi, signer)
 
-    const { feedback, merkleTreeDepth, merkleTreeRoot, nullifier, points } = await req.json()
+    const {
+        feedback,
+        merkleTreeDepth,
+        merkleTreeRoot,
+        nullifier,
+        scope,
+        groupIdsIdx,
+        ethAddress,
+        diffAmounts,
+        points,
+        proof,
+        publicSignals
+    } = await req.json()
+
+    console.log("scope", scope)
 
     try {
-        const transaction = await contract.sendFeedback(merkleTreeDepth, merkleTreeRoot, nullifier, feedback, points)
+        const { a, b, c, input } = await parseGloth16Proof(proof, publicSignals)
+
+        // await contract.verify(a, b, c, input)
+
+        // await testTx.wait()
+
+        console.log("13")
+        const transaction = await contract.sendFeedback(
+            {
+                merkleTreeDepth,
+                merkleTreeRoot,
+                nullifier,
+                feedback: input[4],
+                scope,
+                points,
+                a,
+                b,
+                c,
+                input
+            },
+            groupIdsIdx,
+            ethAddress,
+            diffAmounts
+        )
+        console.log("14")
 
         await transaction.wait()
 

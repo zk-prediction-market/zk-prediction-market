@@ -20,10 +20,22 @@ export async function POST(req: NextRequest) {
     const signer = new Wallet(ethereumPrivateKey, provider)
     const contract = new Contract(contractAddress, Feedback.abi, signer)
 
-    const { identityCommitment } = await req.json()
+    const { identityCommitment, groupIdsIdx, proof } = await req.json()
 
     try {
-        const transaction = await contract.joinGroup(identityCommitment)
+        // const data = await (
+        //     await fetch(`http://127.0.0.1:5001/verify`, {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify({ account: proof }),
+        //     })
+        // ).json()
+
+        // console.log(data)
+
+        const transaction = await contract.joinGroup(identityCommitment, groupIdsIdx)
 
         await transaction.wait()
 
