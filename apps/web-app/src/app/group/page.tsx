@@ -207,7 +207,7 @@ export default function GroupsPage() {
                         colorScheme="primary"
                         variant="link"
                         size="lg"
-                        onClick={() => router.push("/proofs")}
+                        onClick={() => router.push("/issueselect")}
                         // disabled={!onNextClick}
                         // onClick={onNextClick || undefined}
                         // visibility={onNextClick ? "visible" : "hidden"}
