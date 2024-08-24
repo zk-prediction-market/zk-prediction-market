@@ -27,6 +27,7 @@
         "react-dom": "^18",
         "react-icons": "^4.8.0",
         "snarkjs": "^0.7.4",
+        "tailwindcss": "^1",
         "tlsn-js": "0.1.0-alpha.5.3",
         "viem": "^2.19.9",
         "wagmi": "^2.12.7"
