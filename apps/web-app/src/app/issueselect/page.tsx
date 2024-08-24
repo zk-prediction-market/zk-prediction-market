@@ -14,7 +14,11 @@ const daoList = [
     { name: "DAO XのProposal C or D", icon: FiDribbble, value: 89 }
 ]
 
-const PercentageBarChart = ({ value }) => {
+interface PercentageBarChartProps {
+    value: number;
+}
+
+const PercentageBarChart = ({ value }: PercentageBarChartProps) => {
     const data = [{ name: "Percentage", value }]
 
     return (
@@ -28,7 +32,7 @@ const PercentageBarChart = ({ value }) => {
                     labelStyle={{ color: "#A0AEC0" }}
                 />
                 <Bar dataKey="value" fill="#38B2AC" background={{ fill: "#2D3748" }}>
-                    <LabelList dataKey="value" position="center" fill="#FFFFFF" formatter={(value) => `${value}%`} />
+                    <LabelList dataKey="value" position="center" fill="#FFFFFF" formatter={(value: number) => `${value}%`} />
                 </Bar>
             </BarChart>
         </ResponsiveContainer>
