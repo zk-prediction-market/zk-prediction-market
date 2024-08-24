@@ -3,7 +3,7 @@
 
 import { Box, Container, Flex, Input, SimpleGrid, Text, Heading, Icon, Button } from "@chakra-ui/react"
 import { FiCircle, FiHome, FiDribbble } from "react-icons/fi"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from "recharts"
 
 const daoList = [
     { name: "アメリカ大統領選", icon: FiCircle, value: 65 },
@@ -15,19 +15,19 @@ const daoList = [
 ]
 
 const PercentageBarChart = ({ value }) => {
-    const data = [{ name: 'Percentage', value }]
+    const data = [{ name: "Percentage", value }]
 
     return (
         <ResponsiveContainer width="100%" height={60}>
             <BarChart data={data} layout="vertical">
                 <XAxis type="number" domain={[0, 100]} hide />
                 <YAxis type="category" hide />
-                <Tooltip 
-                    formatter={(value) => [`${value}%`, 'Percentage']}
-                    contentStyle={{ backgroundColor: '#2D3748', border: 'none' }}
-                    labelStyle={{ color: '#A0AEC0' }}
+                <Tooltip
+                    formatter={(value) => [`${value}%`, "Percentage"]}
+                    contentStyle={{ backgroundColor: "#2D3748", border: "none" }}
+                    labelStyle={{ color: "#A0AEC0" }}
                 />
-                <Bar dataKey="value" fill="#38B2AC" background={{ fill: '#2D3748' }}>
+                <Bar dataKey="value" fill="#38B2AC" background={{ fill: "#2D3748" }}>
                     <LabelList dataKey="value" position="center" fill="#FFFFFF" formatter={(value) => `${value}%`} />
                 </Bar>
             </BarChart>
@@ -37,7 +37,7 @@ const PercentageBarChart = ({ value }) => {
 
 export default function DAODirectory() {
     return (
-        <Box minH="100vh" minW={"90vw"} >
+        <Box minH="100vh" minW={"90vw"}>
             {/* <Flex as="nav" align="center" justify="space-between" wrap="wrap" padding="1.5rem" bg="gray.800">
         <Flex align="center" mr={5}>
           <Icon as={FiCircle} w={6} h={6} mr={2} />
@@ -74,8 +74,10 @@ export default function DAODirectory() {
                         >
                             <Flex direction="column" justify="space-between" height="100%">
                                 <Flex align="center" mb={6} position="relative">
-                                    <Icon as={dao.icon} w={12} h={12} mr={4}  position="absolute" left={0}/>
-                                    <Heading size="md" flex={1}  width="100%" textAlign="center" pl={12} pr={12}>{dao.name}</Heading>
+                                    <Icon as={dao.icon} w={12} h={12} mr={4} position="absolute" left={0} />
+                                    <Heading size="md" flex={1} width="100%" textAlign="center" pl={12} pr={12}>
+                                        {dao.name}
+                                    </Heading>
                                     <Button colorScheme="teal.300" size="md" width="40%" alignSelf="center">
                                         Trade
                                     </Button>
