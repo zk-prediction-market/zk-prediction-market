@@ -89,7 +89,12 @@ describe("Feedback", () => {
                     .to.emit(semaphoreContract, "MemberAdded")
                     .withArgs(groupId, i, user.commitment, group.root)
             }
-            console.log("5214945504902875382907094956281886666286383287992303378982586946317105417533", await feedbackContract.utxoHashStatus("5214945504902875382907094956281886666286383287992303378982586946317105417533"))
+            console.log(
+                "5214945504902875382907094956281886666286383287992303378982586946317105417533",
+                await feedbackContract.utxoHashStatus(
+                    "5214945504902875382907094956281886666286383287992303378982586946317105417533"
+                )
+            )
         })
     })
 
@@ -144,7 +149,6 @@ describe("Feedback", () => {
 
             checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
             console.log("checkBalances", checkBalances)
-
 
             console.log("feedbackInput.input[3]", input[3])
             console.log("utxoHashStatus", await feedbackContract.utxoHashStatus(input[3]))
@@ -233,7 +237,6 @@ describe("Feedback", () => {
             checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
             console.log("checkBalances", checkBalances)
 
-
             console.log("feedbackInput.input[3]", input2[3])
             console.log("utxoHashStatus", await feedbackContract.utxoHashStatus(input2[3]))
             await (
@@ -312,7 +315,6 @@ describe("Feedback", () => {
 
             checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
             console.log("checkBalances", checkBalances)
-
 
             console.log("feedbackInput.input[3]", input3[3])
             console.log("utxoHashStatus", await feedbackContract.utxoHashStatus(input3[3]))
@@ -425,7 +427,12 @@ describe("Feedback", () => {
 
             console.log("feedbackInput.input[3]", input4[3])
             console.log("utxoHashStatus", await feedbackContract.utxoHashStatus(input4[3]))
-            console.log("5214945504902875382907094956281886666286383287992303378982586946317105417533", await feedbackContract.utxoHashStatus("5214945504902875382907094956281886666286383287992303378982586946317105417533"))
+            console.log(
+                "5214945504902875382907094956281886666286383287992303378982586946317105417533",
+                await feedbackContract.utxoHashStatus(
+                    "5214945504902875382907094956281886666286383287992303378982586946317105417533"
+                )
+            )
             await (
                 await feedbackContract.sendFeedback(
                     {
@@ -515,7 +522,6 @@ describe("Feedback", () => {
 
             checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
             console.log("checkBalances", checkBalances)
-
 
             console.log("feedbackInput.input[3]", input5[3])
             console.log("utxoHashStatus", await feedbackContract.utxoHashStatus(input5[3]))
