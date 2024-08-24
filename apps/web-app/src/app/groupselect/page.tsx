@@ -1,38 +1,44 @@
-// app/(custom-layout)/dao-directory/page.tsx
 "use client"
 
-import { Box, Container, Flex, Input, SimpleGrid, Text, Button, VStack, Heading, Icon } from "@chakra-ui/react"
+import {
+    Box,
+    Container,
+    Flex,
+    Input,
+    SimpleGrid,
+    Text,
+    Button,
+    VStack,
+    Heading,
+    Icon,
+    useToast
+} from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
-// import { SearchIcon, SettingsIcon } from "@chakra-ui/icons"
 import { FiCircle, FiHome, FiDribbble } from "react-icons/fi"
+import ENSCheckButton from "@/components/ENSCheckButton"
 
 const daoList = [
     { name: "Liberal Democratic Party", icon: FiCircle },
     { name: "Japanese citizens", icon: FiHome },
     { name: "USA citizens", icon: FiCircle },
-    { name: "Ethereum Japan", icon: FiDribbble }
+    { name: "ENS holders", icon: FiDribbble, requiresENS: true }
 ]
 
 export default function DAODirectory() {
     const router = useRouter()
+    const toast = useToast()
+
+    const handleJoin = (dao) => {
+        if (dao.requiresENS) {
+            // ENSが必要なDAOの場合は何もしない（ENSCheckButtonが処理を行う）
+            return
+        }
+        // その他のDAOの場合は直接遷移
+        router.push("/group")
+    }
+
     return (
         <Box minH="100vh" minW={"90vw"}>
-            {/* <Flex as="nav" align="center" justify="space-between" wrap="wrap" padding="1.5rem" bg="gray.800">
-        <Flex align="center" mr={5}>
-          <Icon as={FiCircle} w={6} h={6} mr={2} />
-          <Heading as="h1" size="lg" letterSpacing={'tighter'}>
-            zk Prediction Market
-          </Heading>
-        </Flex>
-
-        <Flex align="center">
-          <Button variant="ghost" mr={3}>Home</Button>
-          <Button variant="ghost" color="red.500" mr={3}>Create a Futarchy</Button>
-          <Icon as={SettingsIcon} w={6} h={6} mr={3} />
-          <Button colorScheme="blue">Connect Wallet</Button>
-        </Flex>
-      </Flex> */}
-
             <Container maxW="container.xl" py={8}>
                 <Input placeholder="Search" size="lg" bg="gray.800" mb={8} borderRadius="md" />
 
@@ -56,15 +62,19 @@ export default function DAODirectory() {
                                     {dao.name}
                                 </Heading>
                                 <Icon as={dao.icon} w={16} h={16} alignSelf="center" />
-                                <Button
-                                    colorScheme="teal.300"
-                                    size="md"
-                                    width="40%"
-                                    alignSelf="center"
-                                    onClick={() => router.push("/group")}
-                                >
-                                    JOIN
-                                </Button>
+                                {dao.requiresENS ? (
+                                    <ENSCheckButton onJoin={() => router.push("/group")} />
+                                ) : (
+                                    <Button
+                                        colorScheme="teal"
+                                        size="md"
+                                        width="40%"
+                                        alignSelf="center"
+                                        onClick={() => handleJoin(dao)}
+                                    >
+                                        JOIN
+                                    </Button>
+                                )}
                             </VStack>
                         </Box>
                     ))}
