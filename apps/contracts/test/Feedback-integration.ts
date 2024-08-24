@@ -35,7 +35,20 @@ const parseGloth16Proof = async (proof: any, publicSignals: any) => {
         BigNumberish,
         BigNumberish,
         BigNumberish
-    ] = [argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16], argv[17], argv[18], argv[19]] // ここで必要な要素数を確保
+    ] = [
+        argv[8],
+        argv[9],
+        argv[10],
+        argv[11],
+        argv[12],
+        argv[13],
+        argv[14],
+        argv[15],
+        argv[16],
+        argv[17],
+        argv[18],
+        argv[19]
+    ] // ここで必要な要素数を確保
 
     return { a, b, c, input }
 }
@@ -554,8 +567,8 @@ describe("Feedback", () => {
                     [diffAmounts[0], diffAmounts[1], diffAmounts[2], diffAmounts[3]]
                 )
             ).wait()
-                // .to.emit(feedbackContract, "UpdatePoolBalances")
-                // .withArgs(grounIdsIdx, (await ethers.provider.getBlock("latest"))!.timestamp, 500, 350, 300)
+            // .to.emit(feedbackContract, "UpdatePoolBalances")
+            // .withArgs(grounIdsIdx, (await ethers.provider.getBlock("latest"))!.timestamp, 500, 350, 300)
 
             console.log("withdraw done")
 
