@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import useSemaphoreIdentity from "@/hooks/useSemaphoreIdentity"
 // import proofTest from "../../examples/proofTest.json"
 import SmallPageContainer from "@/components/SmallPageContainer"
+import IconChevronRight from "@/icons/IconChevronRight"
 // import { prepareSendUtxo } from "@/utils/prepareSendUtxo"
 // import { Group } from "@semaphore-protocol/core"
 
@@ -179,11 +180,41 @@ export default function GroupsPage() {
 
                 <Divider pt="3" borderColor="gray.500" />
 
-                <Stepper
+                {/* <Stepper
                     step={2}
                     onPrevClick={() => router.push("/signUp")}
-                    onNextClick={userHasJoined ? () => router.push("/proofs") : undefined}
-                />
+                    onNextClick={userHasJoined ? () => router.push("/proofs") : undefined} */}
+                {/* /> */}
+                <HStack width="full" justify="space-between" pt="6">
+                    {/* <Button
+                        flex="1"
+                        leftIcon={<IconChevronLeft />}
+                        justifyContent="left"
+                        colorScheme="primary"
+                        variant="link"
+                        size="lg"
+                        // disabled={!onPrevClick}
+                        // onClick={onPrevClick || undefined}
+                        // visibility={onPrevClick ? "visible" : "hidden"}
+                    >
+                        Prev
+                    </Button> */}
+
+                    <Button
+                        flex="1"
+                        rightIcon={<IconChevronRight />}
+                        justifyContent="right"
+                        colorScheme="primary"
+                        variant="link"
+                        size="lg"
+                        onClick={() => router.push("/proofs")}
+                        // disabled={!onNextClick}
+                        // onClick={onNextClick || undefined}
+                        // visibility={onNextClick ? "visible" : "hidden"}
+                    >
+                        Done
+                    </Button>
+                </HStack>
             </SmallPageContainer>
         </>
     )

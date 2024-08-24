@@ -7,6 +7,8 @@ import { useCallback, useEffect, useState } from "react"
 import Stepper from "../../components/Stepper"
 import { useLogContext } from "../../context/LogContext"
 import SmallPageContainer from "@/components/SmallPageContainer"
+import IconChevronRight from "@/icons/IconChevronRight"
+import IconChevronLeft from "@/icons/IconChevronLeft"
 
 export default function IdentitiesPage() {
     const router = useRouter()
@@ -85,7 +87,37 @@ export default function IdentitiesPage() {
 
                 <Divider pt="3" borderColor="gray.500" />
 
-                <Stepper step={1} onNextClick={_identity && (() => router.push("/group"))} />
+                {/* <Stepper step={1} onNextClick={_identity && (() => router.push("/groupselect"))} /> */}
+                <HStack width="full" justify="space-between" pt="6">
+                    {/* <Button
+                        flex="1"
+                        leftIcon={<IconChevronLeft />}
+                        justifyContent="left"
+                        colorScheme="primary"
+                        variant="link"
+                        size="lg"
+                        // disabled={!onPrevClick}
+                        // onClick={onPrevClick || undefined}
+                        // visibility={onPrevClick ? "visible" : "hidden"}
+                    >
+                        Prev
+                    </Button> */}
+
+                    <Button
+                        flex="1"
+                        rightIcon={<IconChevronRight />}
+                        justifyContent="right"
+                        colorScheme="primary"
+                        variant="link"
+                        size="lg"
+                        onClick={() => router.push("/groupselect")}
+                        // disabled={!onNextClick}
+                        // onClick={onNextClick || undefined}
+                        // visibility={onNextClick ? "visible" : "hidden"}
+                    >
+                        Next
+                    </Button>
+                </HStack>
             </SmallPageContainer>
         </>
     )

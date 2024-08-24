@@ -2,6 +2,7 @@
 "use client"
 
 import { Box, Container, Flex, Input, SimpleGrid, Text, Button, VStack, Heading, Icon } from "@chakra-ui/react"
+import { useRouter } from "next/navigation"
 // import { SearchIcon, SettingsIcon } from "@chakra-ui/icons"
 import { FiCircle, FiHome, FiDribbble } from "react-icons/fi"
 
@@ -13,6 +14,7 @@ const daoList = [
 ]
 
 export default function DAODirectory() {
+    const router = useRouter()
     return (
         <Box minH="100vh" minW={"90vw"}>
             {/* <Flex as="nav" align="center" justify="space-between" wrap="wrap" padding="1.5rem" bg="gray.800">
@@ -54,7 +56,13 @@ export default function DAODirectory() {
                                     {dao.name}
                                 </Heading>
                                 <Icon as={dao.icon} w={16} h={16} alignSelf="center" />
-                                <Button colorScheme="teal.300" size="md" width="40%" alignSelf="center">
+                                <Button
+                                    colorScheme="teal.300"
+                                    size="md"
+                                    width="40%"
+                                    alignSelf="center"
+                                    onClick={() => router.push("/group")}
+                                >
                                     JOIN
                                 </Button>
                             </VStack>
