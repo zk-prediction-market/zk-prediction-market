@@ -21,7 +21,7 @@ template Utxo() {
 
     component poseidonNew = Poseidon(5);
     poseidonNew.inputs[0] <== secret;
-    poseidonNew.inputs[1] <== nonce;
+    poseidonNew.inputs[1] <== nonce + 1;
     poseidonNew.inputs[2] <== userNewBalances[0];
     poseidonNew.inputs[3] <== userNewBalances[1];
     poseidonNew.inputs[4] <== userNewBalances[2];
