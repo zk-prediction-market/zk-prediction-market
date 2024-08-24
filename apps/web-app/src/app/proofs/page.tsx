@@ -307,6 +307,7 @@ export default function ProofsPage() {
                         nonce: nonce,
                         userCurrentBalances: utxoBalances.userCurrentBalances,
                         userNewBalances: utxoBalances.userNewBalances,
+                        diff: utxoBalances.diffAmounts,
                         poolCurrentBalances: utxoBalances.poolCurrentBalances
                     }
 

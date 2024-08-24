@@ -3,15 +3,17 @@
 import { Box, Container, Flex, Input, SimpleGrid, Text, Heading, Icon, Button } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
 import { FiCircle, FiHome, FiDribbble } from "react-icons/fi"
+import { FaEarthAsia } from "react-icons/fa6"
+import { FaFlagUsa } from "react-icons/fa"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from "recharts"
 
 const daoList = [
-    { name: "アメリカ大統領選", icon: FiCircle, value: 65 },
-    { name: "自民党総裁戦", icon: FiHome, value: 78 },
-    { name: "自民党総裁戦自民党員票", icon: FiCircle, value: 42 },
-    { name: "DAO XのProposal A or B", icon: FiDribbble, value: 55 },
-    { name: "DAO XのProposal B or C", icon: FiDribbble, value: 30 },
-    { name: "DAO XのProposal C or D", icon: FiDribbble, value: 89 }
+    { name: "Will Trump say 'mog' in 2024?", icon: FaFlagUsa, value: 65 },
+    { name: "2024 August hottest on record?", icon: FaEarthAsia, value: 78 },
+    { name: "Will Biden finish his term?", icon: FaFlagUsa, value: 42 },
+    { name: "DAO X: Proposal A or B", icon: FiDribbble, value: 55 },
+    { name: "DAO X: Proposal B or C", icon: FiDribbble, value: 30 },
+    { name: "DAO X: Proposal C or D", icon: FiDribbble, value: 89 }
 ]
 
 interface PercentageBarChartProps {

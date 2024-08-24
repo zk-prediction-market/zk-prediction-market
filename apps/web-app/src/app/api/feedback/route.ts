@@ -1,4 +1,4 @@
-import { Contract, InfuraProvider, JsonRpcProvider, Wallet } from "ethers"
+import { Contract, encodeBytes32String, InfuraProvider, JsonRpcProvider, Wallet } from "ethers"
 import { NextRequest } from "next/server"
 import Feedback from "../../../../contract-artifacts/Feedback.json"
 import { parseGloth16Proof } from "@/utils/parseGloth16Proof"
@@ -44,13 +44,23 @@ export async function POST(req: NextRequest) {
 
         // await testTx.wait()
 
+        // const feedback2: string = input[0].toString()
+
+        // const feedback3: string = encodeBytes32String("test")
+
+        // console.log("========================")
+        // console.log("feedback", feedback)
+        // console.log("feedback2", feedback2)
+        // console.log("feedback3", feedback3)
+        // console.log("========================")
+
         console.log("13")
         const transaction = await contract.sendFeedback(
             {
                 merkleTreeDepth,
                 merkleTreeRoot,
                 nullifier,
-                feedback: input[4],
+                feedback: feedback,
                 scope,
                 points,
                 a,

@@ -31,8 +31,25 @@ const parseGloth16Proof = async (proof: any, publicSignals: any) => {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
         BigNumberish
-    ] = [argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15]] // ここで必要な要素数を確保
+    ] = [
+        argv[8],
+        argv[9],
+        argv[10],
+        argv[11],
+        argv[12],
+        argv[13],
+        argv[14],
+        argv[15],
+        argv[16],
+        argv[17],
+        argv[18],
+        argv[19]
+    ] // ここで必要な要素数を確保
 
     return { a, b, c, input }
 }
@@ -94,6 +111,7 @@ describe("Feedback", () => {
                 nonce: "0",
                 userCurrentBalances: ["0", "0", "0"],
                 userNewBalances: ["11", "12", "13"],
+                diff: ["0", "0", "0", "0"],
                 poolCurrentBalances: ["21", "22", "23"]
             }
             console.log("Input")
@@ -121,6 +139,7 @@ describe("Feedback", () => {
                 nonce: "2",
                 userCurrentBalances: ["0", "0", "0"],
                 userNewBalances: ["999", "999", "999"],
+                diff: ["0", "0", "0", "0"],
                 poolCurrentBalances: ["333", "333", "33"]
             }
             console.log("Input")
@@ -154,8 +173,9 @@ describe("Feedback", () => {
             const Input = {
                 secret: "1",
                 nonce: "1",
-                userCurrentBalances: ["11", "12", "13"],
+                userCurrentBalances: ["999", "999", "999"],
                 userNewBalances: ["31", "32", "33"],
+                diff: ["0", "0", "0", "0"],
                 poolCurrentBalances: ["21", "22", "23"]
             }
             // 証明生成

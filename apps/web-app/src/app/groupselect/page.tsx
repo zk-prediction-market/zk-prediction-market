@@ -16,11 +16,14 @@ import {
 import { useRouter } from "next/navigation"
 import { FiCircle, FiHome, FiDribbble } from "react-icons/fi"
 import ENSCheckButton from "@/components/ENSCheckButton"
+import { BiSolidIdCard } from "react-icons/bi"
+import { GiJapan } from "react-icons/gi"
+import { FaEthereum } from "react-icons/fa"
 
 const daoList = [
-    { name: "Liberal Democratic Party", icon: FiCircle },
-    { name: "Japanese citizens", icon: FiHome },
-    { name: "USA citizens", icon: FiCircle },
+    { name: "Liberal Democratic Party", icon: FiHome },
+    { name: "Japanese citizens", icon: GiJapan },
+    { name: "DID holders", icon: BiSolidIdCard },
     { name: "ENS holders", icon: FiDribbble, requiresENS: true }
 ]
 

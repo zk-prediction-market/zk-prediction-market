@@ -3,8 +3,7 @@ pragma solidity ^0.8.23;
 
 import "@semaphore-protocol/contracts/interfaces/ISemaphore.sol";
 import "./MockCoin.sol";
-import "./PredictionToken.sol";
-import "./verifier.sol"; //inherits with the MerkleTreeInclusionProof verifier contract
+import "./verifier.sol";
 
 contract Feedback is Groth16Verifier {
     ISemaphore public semaphore;
@@ -17,7 +16,7 @@ contract Feedback is Groth16Verifier {
 
     mapping(uint256 => uint256) public results;
 
-    mapping(uint256 => bool) private utxoHashStatus;
+    mapping(uint256 => bool) public utxoHashStatus;
 
     struct PoolBalances {
         uint256 newCoinBalance;
@@ -47,7 +46,7 @@ contract Feedback is Groth16Verifier {
         uint[2] a;
         uint[2][2] b;
         uint[2] c;
-        uint[8] input;
+        uint[12] input;
     }
 
     constructor(
@@ -70,9 +69,6 @@ contract Feedback is Groth16Verifier {
 
         uint256 groupId3 = semaphore.createGroup(address(this));
         groupIds.push(groupId3);
-
-        // tokenA = new PredictionToken(tokenAName, tokenASymbol, address(this));
-        // tokenB = new PredictionToken(tokenBName, tokenBSymbol, address(this));
     }
 
     function setMockCoin(address mockCoinAddress) external {
@@ -100,11 +96,10 @@ contract Feedback is Groth16Verifier {
     ) public {
         _verifyCheck(groupIdsIdx, feedbackInput.a, feedbackInput.b, feedbackInput.c, feedbackInput.input);
 
-        // TODO: fix later
-        // if (feedbackInput.input[3] != 0) {
-        //     require(utxoHashStatus[feedbackInput.input[3]], "Utxo already used");
-        //     utxoHashStatus[feedbackInput.input[3]] = false;
-        // }
+        if (feedbackInput.input[3] != 0) {
+            require(utxoHashStatus[feedbackInput.input[3]] == true, "utxoHash already used");
+            utxoHashStatus[feedbackInput.input[3]] = false;
+        }
         utxoHashStatus[feedbackInput.input[4]] = true;
 
         ISemaphore.SemaphoreProof memory proof = ISemaphore.SemaphoreProof(
@@ -116,7 +111,7 @@ contract Feedback is Groth16Verifier {
             feedbackInput.points
         );
 
-        // semaphore.validateProof(groupIds[groupIdsIdx], proof);
+        semaphore.validateProof(groupIds[groupIdsIdx], proof);
 
         PoolBalances memory poolBalances = PoolBalances({
             newCoinBalance: feedbackInput.input[5],
@@ -174,16 +169,6 @@ contract Feedback is Groth16Verifier {
         );
     }
 
-    function deposit(uint256 groupIdsIdx, uint256 amount) external {
-        mockCoin.transferFrom(msg.sender, address(this), amount);
-        // tokenA.mint(address(this), amount * 10);
-        // tokenB.mint(address(this), amount * 10);
-
-        coinBalances[groupIdsIdx] += amount;
-        tokenABalances[groupIdsIdx] += amount * 10;
-        tokenBBalances[groupIdsIdx] += amount * 10;
-    }
-
     function setResult(uint256 _groupIdsIdx, uint256 _result) external {
         results[_groupIdsIdx] = _result;
     }
@@ -204,10 +189,6 @@ contract Feedback is Groth16Verifier {
         mockCoin.transfer(_ethAddress, _poolSub);
     }
 
-    function claim(uint256 _groupIdsIdx) external {
-        require(results[_groupIdsIdx] != 0, "Result not yet available");
-    }
-
     function checkBalances(uint256 groupIdsIdx) public view returns (uint256, uint256, uint256, uint256) {
         return (
             coinBalances[groupIdsIdx],
@@ -217,23 +198,12 @@ contract Feedback is Groth16Verifier {
         );
     }
 
-    function checkPrice(uint256 groupIdsIdx) public view returns (uint256, uint256) {
-        uint256 totalBalance = tokenABalances[groupIdsIdx] + tokenBBalances[groupIdsIdx];
-
-        require(totalBalance > 0, "Total balance must be greater than zero to prevent division by zero");
-
-        uint256 tokenAPrice = tokenABalances[groupIdsIdx] / totalBalance;
-        uint256 tokenBPrice = tokenBBalances[groupIdsIdx] / totalBalance;
-
-        return (tokenAPrice, tokenBPrice);
-    }
-
     function _verifyCheck(
         uint256 groupIdsIdx,
         uint[2] calldata a,
         uint[2][2] calldata b,
         uint[2] calldata c,
-        uint[8] calldata input
+        uint[12] calldata input
     ) public view returns (bool) {
         // require(input[0] == coinBalances[groupIdsIdx], "Invalid mockCoin balance");
         // require(input[1] == tokenABalances[groupIdsIdx], "Invalid tokenA balance");
@@ -248,7 +218,7 @@ contract Feedback is Groth16Verifier {
         uint[2] calldata a,
         uint[2][2] calldata b,
         uint[2] calldata c,
-        uint[8] calldata input
+        uint[12] calldata input
     ) public view returns (bool) {
         bool isValid = verifyProof(a, b, c, input);
 
