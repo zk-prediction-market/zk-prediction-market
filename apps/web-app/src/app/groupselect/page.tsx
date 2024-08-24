@@ -31,7 +31,7 @@ export default function DAODirectory() {
     const router = useRouter()
     const toast = useToast()
 
-    const handleJoin = (dao) => {
+    const handleJoin = (dao: any) => {
         if (dao.requiresENS) {
             // ENSが必要なDAOの場合は何もしない（ENSCheckButtonが処理を行う）
             return
