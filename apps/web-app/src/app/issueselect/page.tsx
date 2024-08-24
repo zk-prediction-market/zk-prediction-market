@@ -29,11 +29,6 @@ const PercentageBarChart = ({ value }: PercentageBarChartProps) => {
             <BarChart data={data} layout="vertical">
                 <XAxis type="number" domain={[0, 100]} hide />
                 <YAxis type="category" hide />
-                <Tooltip
-                    formatter={(value) => [`${value}%`, "Percentage"]}
-                    contentStyle={{ backgroundColor: "#2D3748", border: "none" }}
-                    labelStyle={{ color: "#A0AEC0" }}
-                />
                 <Bar dataKey="value" fill="#38B2AC" background={{ fill: "#2D3748" }}>
                     <LabelList
                         dataKey="value"
