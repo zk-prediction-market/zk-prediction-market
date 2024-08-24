@@ -7,6 +7,7 @@ template Utxo() {
     signal input nonce;
     signal input userCurrentBalances[3];
     signal input userNewBalances[3];
+    signal input diff[4];
     signal input poolCurrentBalances[3];
     signal output poolNewBalances[3];
     signal output currentUtxoHash;
@@ -21,7 +22,7 @@ template Utxo() {
 
     component poseidonNew = Poseidon(5);
     poseidonNew.inputs[0] <== secret;
-    poseidonNew.inputs[1] <== nonce;
+    poseidonNew.inputs[1] <== nonce + 1;
     poseidonNew.inputs[2] <== userNewBalances[0];
     poseidonNew.inputs[3] <== userNewBalances[1];
     poseidonNew.inputs[4] <== userNewBalances[2];
@@ -32,6 +33,7 @@ template Utxo() {
     t2 <-- t1!=0 ? 1 : 0;
 
     currentUtxoHash <== t2 * poseidonCurrent.out;
-
     newUtxoHash <== poseidonNew.out;
+
+    
 }

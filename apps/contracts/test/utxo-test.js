@@ -12,6 +12,7 @@ describe("Utxo", function () {
             nonce: "0",
             userCurrentBalances: ["11", "12", "13"],
             userNewBalances: ["11", "12", "13"],
+            diff: ["0", "0", "0", "0"],
             poolCurrentBalances: ["21", "22", "23"]
         }
         // 証明生成
