@@ -2,6 +2,7 @@
 "use client"
 
 import { Box, Container, Flex, Input, SimpleGrid, Text, Heading, Icon, Button } from "@chakra-ui/react"
+import { useRouter } from "next/navigation"
 import { FiCircle, FiHome, FiDribbble } from "react-icons/fi"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from "recharts"
 
@@ -15,7 +16,7 @@ const daoList = [
 ]
 
 interface PercentageBarChartProps {
-    value: number;
+    value: number
 }
 
 const PercentageBarChart = ({ value }: PercentageBarChartProps) => {
@@ -32,7 +33,12 @@ const PercentageBarChart = ({ value }: PercentageBarChartProps) => {
                     labelStyle={{ color: "#A0AEC0" }}
                 />
                 <Bar dataKey="value" fill="#38B2AC" background={{ fill: "#2D3748" }}>
-                    <LabelList dataKey="value" position="center" fill="#FFFFFF" formatter={(value: number) => `${value}%`} />
+                    <LabelList
+                        dataKey="value"
+                        position="center"
+                        fill="#FFFFFF"
+                        formatter={(value: number) => `${value}%`}
+                    />
                 </Bar>
             </BarChart>
         </ResponsiveContainer>
@@ -40,6 +46,7 @@ const PercentageBarChart = ({ value }: PercentageBarChartProps) => {
 }
 
 export default function DAODirectory() {
+    const router = useRouter()
     return (
         <Box minH="100vh" minW={"90vw"}>
             {/* <Flex as="nav" align="center" justify="space-between" wrap="wrap" padding="1.5rem" bg="gray.800">
@@ -82,7 +89,13 @@ export default function DAODirectory() {
                                     <Heading size="md" flex={1} width="100%" textAlign="center" pl={12} pr={12}>
                                         {dao.name}
                                     </Heading>
-                                    <Button colorScheme="teal.300" size="md" width="40%" alignSelf="center">
+                                    <Button
+                                        colorScheme="teal.300"
+                                        size="md"
+                                        width="40%"
+                                        alignSelf="center"
+                                        onClick={() => router.push("/proofs")}
+                                    >
                                         Trade
                                     </Button>
                                 </Flex>
