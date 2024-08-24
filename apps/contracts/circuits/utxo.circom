@@ -7,6 +7,7 @@ template Utxo() {
     signal input nonce;
     signal input userCurrentBalances[3];
     signal input userNewBalances[3];
+    signal input diff[4];
     signal input poolCurrentBalances[3];
     signal output poolNewBalances[3];
     signal output currentUtxoHash;
@@ -32,6 +33,7 @@ template Utxo() {
     t2 <-- t1!=0 ? 1 : 0;
 
     currentUtxoHash <== t2 * poseidonCurrent.out;
-
     newUtxoHash <== poseidonNew.out;
+
+    
 }

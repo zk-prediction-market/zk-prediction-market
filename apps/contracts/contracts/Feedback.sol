@@ -46,7 +46,7 @@ contract Feedback is Groth16Verifier {
         uint[2] a;
         uint[2][2] b;
         uint[2] c;
-        uint[8] input;
+        uint[12] input;
     }
 
     constructor(
@@ -203,7 +203,7 @@ contract Feedback is Groth16Verifier {
         uint[2] calldata a,
         uint[2][2] calldata b,
         uint[2] calldata c,
-        uint[8] calldata input
+        uint[12] calldata input
     ) public view returns (bool) {
         // require(input[0] == coinBalances[groupIdsIdx], "Invalid mockCoin balance");
         // require(input[1] == tokenABalances[groupIdsIdx], "Invalid tokenA balance");
@@ -218,7 +218,7 @@ contract Feedback is Groth16Verifier {
         uint[2] calldata a,
         uint[2][2] calldata b,
         uint[2] calldata c,
-        uint[8] calldata input
+        uint[12] calldata input
     ) public view returns (bool) {
         bool isValid = verifyProof(a, b, c, input);
 
