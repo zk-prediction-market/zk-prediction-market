@@ -329,10 +329,10 @@ export default function ProofsPage() {
                         addFeedback(feedback)
 
                         await refetchBalancesOfMarket()
-                        setSendFeedBackNonce(sendFeedBackNonce + 1)
 
                         localStorage.setItem(`userCurrentBalances${groupIdsIdx}`, JSON.stringify(Input.userNewBalances))
                     }
+                    setSendFeedBackNonce(prevNonce => prevNonce + 1)
                 } catch (error) {
                     console.error(error)
                 } finally {
