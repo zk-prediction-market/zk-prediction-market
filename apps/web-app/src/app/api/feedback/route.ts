@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
                 merkleTreeDepth,
                 merkleTreeRoot,
                 nullifier,
-                feedback: feedback3,
+                feedback: feedback,
                 scope,
                 points,
                 a,
