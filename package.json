@@ -1,10 +1,7 @@
 {
-    "name": "semaphore-boilerplate",
-    "description": "A simple DApp to use as a starting point for your project.",
+    "name": "zk-prediction-market",
+    "description": "",
     "license": "MIT",
-    "repository": "git@github.com:semaphore-protocol/boilerplate.git",
-    "homepage": "https://github.com/semaphore-protocol/boilerplate",
-    "bugs": "https://github.com/semaphore-protocol/boilerplate/issues",
     "private": true,
     "scripts": {
         "dev": "yarn workspaces foreach -A -pi run dev",
