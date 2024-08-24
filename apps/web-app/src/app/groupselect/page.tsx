@@ -2,7 +2,7 @@
 "use client"
 
 import { Box, Container, Flex, Input, SimpleGrid, Text, Button, VStack, Heading, Icon } from "@chakra-ui/react"
-import { SearchIcon, SettingsIcon } from "@chakra-ui/icons"
+// import { SearchIcon, SettingsIcon } from "@chakra-ui/icons"
 import { FiCircle, FiHome, FiDribbble } from "react-icons/fi"
 
 const daoList = [
