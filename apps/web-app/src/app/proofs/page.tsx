@@ -32,6 +32,7 @@ export default function ProofsPage() {
     const [_userCurrentBalances, setUserCurrentBalances] = useState<string[]>([])
     const [_userOnchainBlanace, setUserOnchainBlanace] = useState<string>("")
     const [depositAmount, setDepositAmount] = useState<string>("0")
+    const [betAmount, setBetAmount] = useState<string>("0")
 
     const { address } = useAccount()
 
@@ -88,7 +89,35 @@ export default function ProofsPage() {
             address
         )
 
-        sendFeedback(utxoBalances)
+        await sendFeedback(utxoBalances)
+
+        await refetchBalanceOfMockCoin()
+    }
+
+    const sendBet = async (flag: boolean) => {
+        let userCurrentBalances: string[] = JSON.parse(
+            localStorage.getItem(`userCurrentBalances${groupIdsIdx}`) || "[]"
+        )
+
+        const newUserCoinBalance = (parseInt(userCurrentBalances[0]) - parseInt(betAmount)).toString()
+
+        let newUserTokenABalance: string
+        let newUserTokenBBalance: string
+        if (flag) {
+            newUserTokenABalance = (parseInt(userCurrentBalances[1]) + parseInt(betAmount)).toString()
+            newUserTokenBBalance = parseInt(userCurrentBalances[2]).toString()
+        } else {
+            newUserTokenABalance = parseInt(userCurrentBalances[1]).toString()
+            newUserTokenBBalance = (parseInt(userCurrentBalances[2]) + parseInt(betAmount)).toString()
+        }
+
+        console.log("userNewBalances", [newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance])
+
+        const utxoBalances = await calcUtxo([newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance], address)
+
+        await sendFeedback(utxoBalances)
+
+        await refetchBalanceOfMockCoin()
     }
 
     const calcUtxo = useCallback(
@@ -131,7 +160,8 @@ export default function ProofsPage() {
                 return
             }
 
-            const feedback = prompt("Please enter your feedback:")
+            // const feedback = prompt("Please enter your feedback:")
+            const feedback = "test"
 
             if (feedback && _users) {
                 setLoading.on()
@@ -142,9 +172,11 @@ export default function ProofsPage() {
                     const group = new Group(_users)
                     const message = encodeBytes32String(feedback)
 
-                    const nonce = localStorage.getItem("nonce") || "0"
-                    const scope = nonce
+                    const nonce = localStorage.getItem(`nonce${groupIdsIdx}`) || "0"
+                    const scope = parseInt(nonce, 10)
                     console.log("scope", scope)
+
+                    console.log("generateProof args for semaphore", _identity, group, message, scope)
 
                     const { points, merkleTreeDepth, merkleTreeRoot, nullifier } = await generateProof(
                         _identity,
@@ -195,7 +227,7 @@ export default function ProofsPage() {
                     })
 
                     if (response.status === 200) {
-                        localStorage.setItem("nonce", (parseInt(nonce) + 1).toString())
+                        localStorage.setItem(`nonce${groupIdsIdx}`, (parseInt(nonce) + 1).toString())
                         feedbackSent = true
                     }
 
@@ -220,6 +252,7 @@ export default function ProofsPage() {
                 <HStack width="100%" justify="space-between">
                     <Box width="65%">
                         <Chart />
+                        <Box>aaa</Box>
                     </Box>
                     <Box width="30%">
                         <Heading as="h2" size="xl">
@@ -255,6 +288,9 @@ export default function ProofsPage() {
                                 marginTop="8px"
                                 borderRadius="4px"
                                 border="1px solid #ccc"
+                                onChange={(e) => {
+                                    setBetAmount(e.target.value)
+                                }}
                             />
                         </Box>
                         <HStack pb="5" mt="5" spacing="4" w="full" justify="space-between">
@@ -264,7 +300,7 @@ export default function ProofsPage() {
                                     color="white"
                                     colorScheme="green"
                                     isDisabled={_loading}
-                                    onClick={sendDeposit}
+                                    onClick={() => sendBet(true)}
                                 >
                                     Yes
                                 </Button>
@@ -275,7 +311,7 @@ export default function ProofsPage() {
                                     color="white"
                                     colorScheme="orange"
                                     isDisabled={_loading}
-                                    onClick={sendDeposit}
+                                    onClick={() => sendBet(false)}
                                 >
                                     No
                                 </Button>

@@ -40,7 +40,7 @@ template Utxo() {
     t1 <== isZero[0].out * isZero[1].out;
     t2 <== t1 * isZero[2].out;
 
-    currentUtxoHash <== t2 *poseidonCurrent.out;
+    currentUtxoHash <== t2 * poseidonCurrent.out;
 
     newUtxoHash <== poseidonNew.out;
 }

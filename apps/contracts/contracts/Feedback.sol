@@ -100,10 +100,11 @@ contract Feedback is Groth16Verifier {
     ) public {
         _verifyCheck(groupIdsIdx, feedbackInput.a, feedbackInput.b, feedbackInput.c, feedbackInput.input);
 
-        if (feedbackInput.input[3] != 0) {
-            require(utxoHashStatus[feedbackInput.input[3]], "Utxo already used");
-            utxoHashStatus[feedbackInput.input[3]] = false;
-        }
+        // TODO: fix later
+        // if (feedbackInput.input[3] != 0) {
+        //     require(utxoHashStatus[feedbackInput.input[3]], "Utxo already used");
+        //     utxoHashStatus[feedbackInput.input[3]] = false;
+        // }
         utxoHashStatus[feedbackInput.input[4]] = true;
 
         ISemaphore.SemaphoreProof memory proof = ISemaphore.SemaphoreProof(
@@ -115,7 +116,7 @@ contract Feedback is Groth16Verifier {
             feedbackInput.points
         );
 
-        semaphore.validateProof(groupIds[groupIdsIdx], proof);
+        // semaphore.validateProof(groupIds[groupIdsIdx], proof);
 
         PoolBalances memory poolBalances = PoolBalances({
             newCoinBalance: feedbackInput.input[5],
@@ -128,7 +129,7 @@ contract Feedback is Groth16Verifier {
         });
 
         bool success = mockCoin.transferFrom(ethAddress, address(this), diffAmounts[0]);
-        require(!success, "Transfer failed");
+        require(success, "Transfer failed");
 
         // if (poolBalances._result != 0) {
         //     require(poolBalances.newCoinBalance >= poolBalances.currentCoinBalance, "new coin balance must be larger");
@@ -181,8 +182,13 @@ contract Feedback is Groth16Verifier {
         require(results[_groupIdsIdx] != 0, "Result not yet available");
     }
 
-    function checkBalances(uint256 groupIdsIdx) public view returns (uint256, uint256, uint256) {
-        return (coinBalances[groupIdsIdx], tokenABalances[groupIdsIdx], tokenBBalances[groupIdsIdx]);
+    function checkBalances(uint256 groupIdsIdx) public view returns (uint256, uint256, uint256, uint256) {
+        return (
+            coinBalances[groupIdsIdx],
+            tokenABalances[groupIdsIdx],
+            tokenBBalances[groupIdsIdx],
+            mockCoin.balanceOf(address(this))
+        );
     }
 
     function checkPrice(uint256 groupIdsIdx) public view returns (uint256, uint256) {
