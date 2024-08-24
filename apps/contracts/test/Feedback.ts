@@ -174,6 +174,8 @@ describe("Feedback", () => {
             let userBalanceOfMockCoin
             let poolBalancesOfMockCoin
 
+            await(await mockCoinContract.mint(deployer.getAddress(), 1000000)).wait()
+
             deployerBalanceOfMockCoin = await mockCoinContract.balanceOf(deployer.getAddress())
             console.log("deployerBalanceOfMockCoin", deployerBalanceOfMockCoin)
 
