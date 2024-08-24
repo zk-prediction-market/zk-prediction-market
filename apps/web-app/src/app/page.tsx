@@ -1,52 +1,106 @@
 "use client"
 
-import { Box, Button, Divider, Heading, HStack, Link, Text } from "@chakra-ui/react"
-import { Identity } from "@semaphore-protocol/core"
+import { Box, Container, Flex, Input, SimpleGrid, Text, Heading, Icon, Button } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
-import Stepper from "../components/Stepper"
-import { useLogContext } from "../context/LogContext"
-import Chart from "@/components/Chart"
-import { Profile } from "@/components/profile"
+import { FiCircle, FiHome, FiDribbble } from "react-icons/fi"
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from "recharts"
 
-export default function IdentitiesPage() {
-    const router = useRouter()
-    const { setLog } = useLogContext()
-    const [_identity, setIdentity] = useState<Identity>()
-    const [_userCurrentBalances, setUserCurrentBalances] = useState<string[]>([])
+const daoList = [
+    { name: "アメリカ大統領選", icon: FiCircle, value: 65 },
+    { name: "自民党総裁戦", icon: FiHome, value: 78 },
+    { name: "自民党総裁戦自民党員票", icon: FiCircle, value: 42 },
+    { name: "DAO XのProposal A or B", icon: FiDribbble, value: 55 },
+    { name: "DAO XのProposal B or C", icon: FiDribbble, value: 30 },
+    { name: "DAO XのProposal C or D", icon: FiDribbble, value: 89 }
+]
 
-    useEffect(() => {
-        const privateKey = localStorage.getItem("identity")
-        const userCurrentBalances: string[] = JSON.parse(localStorage.getItem("userCurrentBalances") || "[]")
+interface PercentageBarChartProps {
+    value: number
+}
 
-        if (privateKey) {
-            const identity = Identity.import(privateKey)
-            setIdentity(identity)
-
-            setUserCurrentBalances(userCurrentBalances)
-
-            // setLog("Your Semaphore identity has been retrieved from the browser cache 👌🏽")
-        } else {
-            // setLog("Create your Semaphore identity 👆🏽")
-        }
-    }, [setLog])
-
-    const createIdentity = useCallback(async () => {
-        const identity = new Identity()
-
-        setIdentity(identity)
-
-        localStorage.setItem("identity", identity.export())
-        localStorage.setItem("userCurrentBalances", JSON.stringify(["0", "0", "0"]))
-
-        setLog("Your new Semaphore identity has just been created 🎉")
-    }, [setLog])
+const PercentageBarChart = ({ value }: PercentageBarChartProps) => {
+    const data = [{ name: "Percentage", value }]
 
     return (
-        <>
-            <Box width="100%">
-                <Chart />
-            </Box>
-        </>
+        <ResponsiveContainer width="100%" height={60}>
+            <BarChart data={data} layout="vertical">
+                <XAxis type="number" domain={[0, 100]} hide />
+                <YAxis type="category" hide />
+                <Bar dataKey="value" fill="#38B2AC" background={{ fill: "#2D3748" }}>
+                    <LabelList
+                        dataKey="value"
+                        position="center"
+                        fill="#FFFFFF"
+                        formatter={(value: number) => `${value}%`}
+                    />
+                </Bar>
+            </BarChart>
+        </ResponsiveContainer>
+    )
+}
+
+export default function DAODirectory() {
+    const router = useRouter()
+    return (
+        <Box minH="100vh" minW={"90vw"}>
+            {/* <Flex as="nav" align="center" justify="space-between" wrap="wrap" padding="1.5rem" bg="gray.800">
+        <Flex align="center" mr={5}>
+          <Icon as={FiCircle} w={6} h={6} mr={2} />
+          <Heading as="h1" size="lg" letterSpacing={'tighter'}>
+            zk Prediction Market
+          </Heading>
+        </Flex>
+
+        <Flex align="center">
+          <Button variant="ghost" mr={3}>Home</Button>
+          <Button variant="ghost" color="red.500" mr={3}>Create a Futarchy</Button>
+          <Icon as={SettingsIcon} w={6} h={6} mr={3} />
+          <Button colorScheme="blue">Connect Wallet</Button>
+        </Flex>
+      </Flex> */}
+
+            <Container maxW="container.xl" py={8}>
+                <Input placeholder="Search" size="lg" bg="gray.800" mb={8} borderRadius="md" />
+
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+                    {daoList.map((dao) => (
+                        <Box
+                            key={dao.name}
+                            bg="gray.800"
+                            p={6}
+                            borderRadius="md"
+                            borderWidth="1px"
+                            borderColor="gray"
+                            transition="all 0.3s"
+                            _hover={{
+                                borderColor: "blue.700",
+                                boxShadow: "0 0 15px rgba(66, 153, 225, 0.6)"
+                            }}
+                        >
+                            <Flex direction="column" justify="space-between" height="100%">
+                                <Flex align="center" mb={6} position="relative">
+                                    <Icon as={dao.icon} w={12} h={12} mr={4} position="absolute" left={0} />
+                                    <Heading size="md" flex={1} width="100%" textAlign="center" pl={12} pr={12}>
+                                        {dao.name}
+                                    </Heading>
+                                    <Button
+                                        colorScheme="teal.300"
+                                        size="md"
+                                        width="40%"
+                                        alignSelf="center"
+                                        onClick={() => router.push("/details")}
+                                    >
+                                        Details
+                                    </Button>
+                                </Flex>
+                                <Box mb={4}>
+                                    <PercentageBarChart value={dao.value} />
+                                </Box>
+                            </Flex>
+                        </Box>
+                    ))}
+                </SimpleGrid>
+            </Container>
+        </Box>
     )
 }
