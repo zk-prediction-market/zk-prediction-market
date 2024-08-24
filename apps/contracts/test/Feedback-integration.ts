@@ -113,6 +113,8 @@ describe("Feedback", () => {
                 userNewBalances: ["1000", "0", "0"],
                 poolCurrentBalances: ["0", "0", "0"]
             }
+
+            console.log("Input", Input)
             // 証明生成
             const { proof, publicSignals } = await groth16.fullProve(
                 Input,
@@ -197,6 +199,8 @@ describe("Feedback", () => {
                 userNewBalances: ["300", "700", "0"],
                 poolCurrentBalances: ["0", "0", "0"]
             }
+
+            console.log("Input", Input)
             // 証明生成
             const { proof, publicSignals } = await groth16.fullProve(
                 Input,
@@ -272,6 +276,8 @@ describe("Feedback", () => {
                 userNewBalances: ["0", "700", "300"],
                 poolCurrentBalances: ["700", "700", "0"]
             }
+
+            console.log("Input", Input3)
             // 証明生成
             const { proof, publicSignals } = await groth16.fullProve(
                 Input3,
@@ -361,11 +367,12 @@ describe("Feedback", () => {
             // 証明生成のためにcircuitに入れるインプット
             const Input4 = {
                 secret: "777",
-                nonce: "0",
+                nonce: "1001", // 新しいnonceを使用
                 userCurrentBalances: ["300", "700", "300"],
                 userNewBalances: ["500", "350", "300"],
                 poolCurrentBalances: ["1000", "700", "300"]
             }
+            console.log("Input", Input4)
             // 証明生成
             const { proof, publicSignals } = await groth16.fullProve(
                 Input4,
@@ -396,6 +403,8 @@ describe("Feedback", () => {
 
             checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
             console.log("checkBalances", checkBalances)
+
+            console.log("============before sendFeedback")
 
             await (
                 await feedbackContract.sendFeedback(
@@ -447,11 +456,12 @@ describe("Feedback", () => {
             // 証明生成のためにcircuitに入れるインプット
             const Input5 = {
                 secret: "777",
-                nonce: "0",
+                nonce: "1002", // 新しいnonceを使用
                 userCurrentBalances: ["500", "350", "300"],
                 userNewBalances: ["250", "350", "300"],
                 poolCurrentBalances: ["500", "350", "300"]
             }
+            console.log("Input", Input5)
             // 証明生成
             const { proof, publicSignals } = await groth16.fullProve(
                 Input5,
@@ -461,8 +471,8 @@ describe("Feedback", () => {
 
             console.log("Input5", Input5)
 
-            console.log("parseInt(Input4.userCurrentBalances[1])", parseInt(Input5.userCurrentBalances[1]))
-            console.log("parseInt(Input4.userNewBalances[1])", parseInt(Input5.userNewBalances[1]))
+            console.log("parseInt(Input5.userCurrentBalances[1])", parseInt(Input5.userCurrentBalances[1]))
+            console.log("parseInt(Input5.userNewBalances[1])", parseInt(Input5.userNewBalances[1]))
 
             const diffC = parseInt(Input5.userCurrentBalances[0]) - parseInt(Input5.userNewBalances[0])
 
@@ -520,7 +530,7 @@ describe("Feedback", () => {
 
             expect(checkBalances).to.deep.equal([BigInt(500), BigInt(350), BigInt(300), BigInt(750)])
 
-            console.log("User UTXO", input5)
+            // console.log("User UTXO", input5)
         })
     })
 })

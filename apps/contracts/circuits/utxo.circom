@@ -1,7 +1,6 @@
 pragma circom 2.0.0;
 
 include "../../../node_modules/circomlib/circuits/poseidon.circom";
-include "../../../node_modules/circomlib/circuits/comparators.circom";
 
 template Utxo() {
     signal input secret;
@@ -26,19 +25,11 @@ template Utxo() {
     poseidonNew.inputs[2] <== userNewBalances[0];
     poseidonNew.inputs[3] <== userNewBalances[1];
     poseidonNew.inputs[4] <== userNewBalances[2];
-
-    component isZero[3];
-    isZero[0] = IsZero();
-    isZero[1] = IsZero();
-    isZero[2] = IsZero();
-    isZero[0].in <== userCurrentBalances[0];
-    isZero[1].in <== userCurrentBalances[1];
-    isZero[2].in <== userCurrentBalances[2];
-
     signal t1;
     signal t2;
-    t1 <== isZero[0].out * isZero[1].out;
-    t2 <== t1 * isZero[2].out;
+
+    t1 <== userCurrentBalances[0] + userCurrentBalances[1] + userCurrentBalances[2];
+    t2 <-- t1!=0 ? 1 : 0;
 
     currentUtxoHash <== t2 * poseidonCurrent.out;
 

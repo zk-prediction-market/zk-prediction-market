@@ -100,11 +100,9 @@ contract Feedback is Groth16Verifier {
     ) public {
         _verifyCheck(groupIdsIdx, feedbackInput.a, feedbackInput.b, feedbackInput.c, feedbackInput.input);
 
-        // TODO: fix later
-        // if (feedbackInput.input[3] != 0) {
-        //     require(utxoHashStatus[feedbackInput.input[3]], "Utxo already used");
-        //     utxoHashStatus[feedbackInput.input[3]] = false;
-        // }
+        if (feedbackInput.input[3] != 0) {
+            utxoHashStatus[feedbackInput.input[3]] = false;
+        }
         utxoHashStatus[feedbackInput.input[4]] = true;
 
         ISemaphore.SemaphoreProof memory proof = ISemaphore.SemaphoreProof(
