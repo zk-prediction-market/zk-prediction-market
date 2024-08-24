@@ -2,6 +2,7 @@
 
 import { Box, Text } from "@chakra-ui/react"
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts"
+import dummyDataJson from "@/utils/dummy_data.json"
 
 // ダミーデータの生成
 const generateDummyData = (days: number) => {
@@ -21,7 +22,23 @@ const generateDummyData = (days: number) => {
     return data
 }
 
-const dummyData = generateDummyData(30) // ダミーの30日分のデータを生成
+// 戻り値の型は、{ day: string, Prob_of_Yes: number, No: number }[]
+const makeDummyData = (dummyDataJson: {
+    [key: string]: { A: number; B: number }[]
+}): { day: string; Prob_of_Yes: number; No: number }[] => {
+    const data = []
+    for (const key in dummyDataJson) {
+        const denominator = dummyDataJson[key][0].A + dummyDataJson[key][0].B
+        data.push({
+            day: key,
+            Prob_of_Yes: parseFloat((dummyDataJson[key][0].A / denominator).toFixed(3)),
+            No: parseFloat((dummyDataJson[key][0].B / denominator).toFixed(3))
+        })
+    }
+    return data
+}
+
+const dummyData = makeDummyData(dummyDataJson) // ダミーの30日分のデータを生成
 
 const PredictionMarketChart: React.FC = () => {
     const CustomDot = (props: any) => {
