@@ -16,6 +16,7 @@ import IconChevronRight from "@/icons/IconChevronRight"
 // import { Group } from "@semaphore-protocol/core"
 
 const groupIdsIdx = 0
+const groupId = 0
 
 export default function GroupsPage() {
     const router = useRouter()
@@ -53,17 +54,23 @@ export default function GroupsPage() {
 
         let joinedGroup: boolean = false
 
-        const response1 = await fetch("api/join", {
+        console.log("body", {
+            identityCommitment: _identity.commitment.toString(),
+            groupId,
+            proof: proof
+        })
+
+        const response = await fetch("api/join", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 identityCommitment: _identity.commitment.toString(),
-                groupIdsIdx,
+                groupId: groupId,
                 proof: proof
             })
         })
 
-        if (response1.status === 200) {
+        if (response.status === 200) {
             joinedGroup = true
         }
         // }

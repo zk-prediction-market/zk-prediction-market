@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const signer = new Wallet(ethereumPrivateKey, provider)
     const contract = new Contract(contractAddress, Feedback.abi, signer)
 
-    const { identityCommitment, groupIdsIdx, proof } = await req.json()
+    const { identityCommitment, groupId, proof } = await req.json()
 
     try {
         // const data = await (
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
         // console.log(data)
 
-        const transaction = await contract.joinGroup(identityCommitment, groupIdsIdx)
+        const transaction = await contract.joinGroup(identityCommitment, groupId)
 
         await transaction.wait()
 
