@@ -5,12 +5,15 @@ import { Box, Container, Flex, Input, SimpleGrid, Text, Button, VStack, Heading,
 import { useRouter } from "next/navigation"
 // import { SearchIcon, SettingsIcon } from "@chakra-ui/icons"
 import { FiCircle, FiHome, FiDribbble } from "react-icons/fi"
+import { FaFlagUsa } from "react-icons/fa"
+import { GiJapan } from "react-icons/gi"
+import { FaEthereum } from "react-icons/fa"
 
 const daoList = [
-    { name: "Liberal Democratic Party", icon: FiCircle },
-    { name: "Japanese citizens", icon: FiHome },
-    { name: "USA citizens", icon: FiCircle },
-    { name: "Ethereum Japan", icon: FiDribbble }
+    { name: "Liberal Democratic Party", icon: FiHome },
+    { name: "Japanese citizens", icon: GiJapan },
+    { name: "USA citizens", icon: FaFlagUsa },
+    { name: "Ethereum Japan", icon: FaEthereum }
 ]
 
 export default function DAODirectory() {
