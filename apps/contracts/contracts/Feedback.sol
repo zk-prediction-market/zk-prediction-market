@@ -116,7 +116,7 @@ contract Feedback is Groth16Verifier {
             feedbackInput.points
         );
 
-        // semaphore.validateProof(groupIds[groupIdsIdx], proof);
+        semaphore.validateProof(groupIds[groupIdsIdx], proof);
 
         PoolBalances memory poolBalances = PoolBalances({
             newCoinBalance: feedbackInput.input[5],
