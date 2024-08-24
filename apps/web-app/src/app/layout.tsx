@@ -41,7 +41,9 @@ export default function RootLayout({
                 <Providers initialState={initialState}>
                     <SemaphoreContextProvider>
                         <LogContextProvider>
-                            <PageContainer>{children}</PageContainer>
+                            <PageContainer>
+                                {children}
+                                </PageContainer>
                         </LogContextProvider>
                     </SemaphoreContextProvider>
                 </Providers>
