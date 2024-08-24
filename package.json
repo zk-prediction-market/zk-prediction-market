@@ -27,5 +27,8 @@
     "packageManager": "yarn@4.1.0",
     "devDependencies": {
         "prettier": "^2.5.1"
+    },
+    "dependencies": {
+        "recharts": "^2.12.7"
     }
 }
