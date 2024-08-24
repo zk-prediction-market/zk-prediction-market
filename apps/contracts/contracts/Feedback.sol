@@ -89,11 +89,7 @@ contract Feedback is Groth16Verifier {
         return groupIds;
     }
 
-    function sendFeedback(
-        FeedbackInput calldata feedbackInput,
-        uint256 groupIdsIdx,
-        address ethAddress
-    ) public {
+    function sendFeedback(FeedbackInput calldata feedbackInput, uint256 groupIdsIdx, address ethAddress) public {
         console.log("feedbackInput.input[0]", feedbackInput.input[0]);
         console.log("feedbackInput.input[1]", feedbackInput.input[1]);
         console.log("feedbackInput.input[2]", feedbackInput.input[2]);

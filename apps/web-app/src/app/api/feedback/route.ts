@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
                 input
             },
             groupIdsIdx,
-            ethAddress,
+            ethAddress
         )
         console.log("14")
 
