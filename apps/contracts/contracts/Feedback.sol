@@ -4,6 +4,7 @@ pragma solidity ^0.8.23;
 import "@semaphore-protocol/contracts/interfaces/ISemaphore.sol";
 import "./MockCoin.sol";
 import "./verifier.sol";
+import "hardhat/console.sol";
 
 contract Feedback is Groth16Verifier {
     ISemaphore public semaphore;
@@ -91,9 +92,20 @@ contract Feedback is Groth16Verifier {
     function sendFeedback(
         FeedbackInput calldata feedbackInput,
         uint256 groupIdsIdx,
-        address ethAddress,
-        uint256[4] calldata diffAmounts
+        address ethAddress
     ) public {
+        console.log("feedbackInput.input[0]", feedbackInput.input[0]);
+        console.log("feedbackInput.input[1]", feedbackInput.input[1]);
+        console.log("feedbackInput.input[2]", feedbackInput.input[2]);
+        console.log("feedbackInput.input[3]", feedbackInput.input[3]);
+        console.log("feedbackInput.input[4]", feedbackInput.input[4]);
+        console.log("feedbackInput.input[5]", feedbackInput.input[5]);
+        console.log("feedbackInput.input[6]", feedbackInput.input[6]);
+        console.log("feedbackInput.input[7]", feedbackInput.input[7]);
+        console.log("feedbackInput.input[8]", feedbackInput.input[8]);
+        console.log("feedbackInput.input[9]", feedbackInput.input[9]);
+        console.log("feedbackInput.input[10]", feedbackInput.input[10]);
+        console.log("feedbackInput.input[11]", feedbackInput.input[11]);
         _verifyCheck(groupIdsIdx, feedbackInput.a, feedbackInput.b, feedbackInput.c, feedbackInput.input);
 
         if (feedbackInput.input[3] != 0) {
@@ -114,9 +126,9 @@ contract Feedback is Groth16Verifier {
         semaphore.validateProof(groupIds[groupIdsIdx], proof);
 
         PoolBalances memory poolBalances = PoolBalances({
-            newCoinBalance: feedbackInput.input[5],
-            newTokenABalance: feedbackInput.input[6],
-            newTokenBBalance: feedbackInput.input[7],
+            newCoinBalance: feedbackInput.input[9],
+            newTokenABalance: feedbackInput.input[10],
+            newTokenBBalance: feedbackInput.input[11],
             currentCoinBalance: coinBalances[groupIdsIdx],
             currentTokenABalance: tokenABalances[groupIdsIdx],
             currentTokenBBalance: tokenBBalances[groupIdsIdx],
@@ -127,35 +139,35 @@ contract Feedback is Groth16Verifier {
             // require(poolBalances.newCoinBalance >= poolBalances.currentCoinBalance, "new coin balance must be larger");
             // require(poolBalances.newTokenABalance >= poolBalances.currentTokenABalance, "new TokenA balance must be larger");
             // require(poolBalances.newTokenBBalance >= poolBalances.currentTokenBBalance, "new TokenB balance must be larger");
-            if (diffAmounts[3] != 0) {
-                bool success = mockCoin.transferFrom(ethAddress, address(this), diffAmounts[3]);
+            if (feedbackInput.input[8] != 0) {
+                bool success = mockCoin.transferFrom(ethAddress, address(this), feedbackInput.input[8]);
                 require(success, "Transfer failed");
             } else {
-                coinBalances[groupIdsIdx] += diffAmounts[0];
-                tokenABalances[groupIdsIdx] += diffAmounts[1];
-                tokenBBalances[groupIdsIdx] += diffAmounts[2];
+                coinBalances[groupIdsIdx] += feedbackInput.input[5];
+                tokenABalances[groupIdsIdx] += feedbackInput.input[6];
+                tokenBBalances[groupIdsIdx] += feedbackInput.input[7];
             }
             // if (poolBalances.newCoinBalance > poolBalances.currentCoinBalance) {
 
             //     coinBalances[groupIdsIdx] = poolBalances.currentCoinBalance;
             // } else {
-            //     tokenABalances[groupIdsIdx] = poolBalances.currentTokenABalance + diffAmounts[1];
-            //     tokenBBalances[groupIdsIdx] = poolBalances.currentTokenBBalance + diffAmounts[2];
+            //     tokenABalances[groupIdsIdx] = poolBalances.currentTokenABalance + feedbackInput.input[6];
+            //     tokenBBalances[groupIdsIdx] = poolBalances.currentTokenBBalance + feedbackInput.input[7];
             // }
-        } else if (poolBalances._result == 1 && diffAmounts[2] == 0) {
+        } else if (poolBalances._result == 1 && feedbackInput.input[7] == 0) {
             // require(poolBalances.newCoinBalance <= poolBalances.currentCoinBalance, "new coin balance must be smaller");
-            if (diffAmounts[0] != 0 && diffAmounts[1] != 0 && diffAmounts[3] == 0) {
-                uint256 winAmount = (poolBalances.currentCoinBalance * diffAmounts[1]) /
+            if (feedbackInput.input[5] != 0 && feedbackInput.input[6] != 0 && feedbackInput.input[8] == 0) {
+                uint256 winAmount = (poolBalances.currentCoinBalance * feedbackInput.input[6]) /
                     poolBalances.currentTokenABalance;
 
                 coinBalances[groupIdsIdx] -= winAmount;
-                tokenABalances[groupIdsIdx] = poolBalances.currentTokenABalance - diffAmounts[1];
+                tokenABalances[groupIdsIdx] = poolBalances.currentTokenABalance - feedbackInput.input[6];
 
                 // uint256 c = 1000;
                 // uint256 a = 700;
                 // uint256 d = c / a;
-            } else if (diffAmounts[3] != 0) {
-                bool success = mockCoin.transfer(ethAddress, diffAmounts[3]);
+            } else if (feedbackInput.input[8] != 0) {
+                bool success = mockCoin.transfer(ethAddress, feedbackInput.input[8]);
                 require(success, "Transfer failed");
             }
         } else if (poolBalances._result == 2) {}

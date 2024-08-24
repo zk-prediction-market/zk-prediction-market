@@ -29,7 +29,6 @@ export async function POST(req: NextRequest) {
         scope,
         groupIdsIdx,
         ethAddress,
-        diffAmounts,
         points,
         proof,
         publicSignals
@@ -70,7 +69,6 @@ export async function POST(req: NextRequest) {
             },
             groupIdsIdx,
             ethAddress,
-            diffAmounts
         )
         console.log("14")
 
