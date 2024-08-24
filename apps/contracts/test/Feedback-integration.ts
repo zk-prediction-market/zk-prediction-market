@@ -194,7 +194,7 @@ describe("Feedback", () => {
                 secret: "777",
                 nonce: "0",
                 userCurrentBalances: ["1000", "0", "0"],
-                userNewBalances: ["400", "600", "0"],
+                userNewBalances: ["300", "700", "0"],
                 poolCurrentBalances: ["0", "0", "0"]
             }
             // 証明生成
@@ -262,15 +262,15 @@ describe("Feedback", () => {
 
             const checkBalancesOfPool = await feedbackContract.checkBalances(groupId)
             console.log("checkBalancesOfPool", checkBalancesOfPool)
-            expect(checkBalancesOfPool).to.deep.equal([BigInt(600), BigInt(600), BigInt(0), BigInt(1000)])
+            expect(checkBalancesOfPool).to.deep.equal([BigInt(700), BigInt(700), BigInt(0), BigInt(1000)])
 
             // 証明生成のためにcircuitに入れるインプット
             const Input3 = {
                 secret: "777",
                 nonce: "0",
-                userCurrentBalances: ["400", "600", "0"],
-                userNewBalances: ["300", "700", "0"],
-                poolCurrentBalances: ["0", "0", "0"]
+                userCurrentBalances: ["300", "700", "0"],
+                userNewBalances: ["0", "700", "300"],
+                poolCurrentBalances: ["700", "700", "0"]
             }
             // 証明生成
             const { proof, publicSignals } = await groth16.fullProve(
@@ -328,7 +328,7 @@ describe("Feedback", () => {
             checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
             console.log("checkBalances", checkBalances)
 
-            expect(checkBalances).to.deep.equal([BigInt(700), BigInt(700), BigInt(0), BigInt(1000)])
+            expect(checkBalances).to.deep.equal([BigInt(1000), BigInt(700), BigInt(300), BigInt(1000)])
 
             console.log("User UTXO", Input3)
         })
@@ -356,15 +356,15 @@ describe("Feedback", () => {
 
             const checkBalancesOfPool = await feedbackContract.checkBalances(groupId)
             console.log("checkBalancesOfPool", checkBalancesOfPool)
-            expect(checkBalancesOfPool).to.deep.equal([BigInt(700), BigInt(700), BigInt(0), BigInt(1000)])
+            expect(checkBalancesOfPool).to.deep.equal([BigInt(1000), BigInt(700), BigInt(300), BigInt(1000)])
 
             // 証明生成のためにcircuitに入れるインプット
             const Input4 = {
                 secret: "777",
                 nonce: "0",
-                userCurrentBalances: ["300", "700", "0"],
-                userNewBalances: ["1000", "0", "0"],
-                poolCurrentBalances: ["700", "0", "0"]
+                userCurrentBalances: ["300", "700", "300"],
+                userNewBalances: ["500", "350", "300"],
+                poolCurrentBalances: ["1000", "700", "300"]
             }
             // 証明生成
             const { proof, publicSignals } = await groth16.fullProve(
@@ -416,6 +416,7 @@ describe("Feedback", () => {
                     [diffAmounts[0], diffAmounts[1], diffAmounts[2], diffAmounts[3]]
                 )
             ).wait()
+            console.log("============")
 
             console.log("win rate done")
 
@@ -425,7 +426,11 @@ describe("Feedback", () => {
             checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
             console.log("checkBalances", checkBalances)
 
-            expect(checkBalances).to.deep.equal([BigInt(0), BigInt(0), BigInt(0), BigInt(1000)])
+            console.log("===========")
+            const checkBalancesOfPool2 = await feedbackContract.checkBalances(groupId)
+            console.log("checkBalancesOfPool", checkBalancesOfPool2)
+            expect(checkBalancesOfPool2).to.deep.equal([BigInt(500), BigInt(350), BigInt(300), BigInt(1000)])
+            console.log("===========")
 
             console.log("User UTXO", Input4)
         })
@@ -437,15 +442,15 @@ describe("Feedback", () => {
 
             const checkBalancesOfPool = await feedbackContract.checkBalances(groupId)
             console.log("checkBalancesOfPool", checkBalancesOfPool)
-            expect(checkBalancesOfPool).to.deep.equal([BigInt(0), BigInt(0), BigInt(0), BigInt(1000)])
+            expect(checkBalancesOfPool).to.deep.equal([BigInt(500), BigInt(350), BigInt(300), BigInt(1000)])
 
             // 証明生成のためにcircuitに入れるインプット
             const Input5 = {
                 secret: "777",
                 nonce: "0",
-                userCurrentBalances: ["1000", "0", "0"],
-                userNewBalances: ["0", "0", "0"],
-                poolCurrentBalances: ["0", "0", "0"]
+                userCurrentBalances: ["500", "350", "300"],
+                userNewBalances: ["250", "350", "300"],
+                poolCurrentBalances: ["500", "350", "300"]
             }
             // 証明生成
             const { proof, publicSignals } = await groth16.fullProve(
@@ -503,7 +508,7 @@ describe("Feedback", () => {
                 )
             )
                 .to.emit(feedbackContract, "UpdatePoolBalances")
-                .withArgs(grounIdsIdx, (await ethers.provider.getBlock("latest"))!.timestamp, 0, 0, 0)
+                .withArgs(grounIdsIdx, (await ethers.provider.getBlock("latest"))!.timestamp, 500, 350, 300)
 
             console.log("withdraw done")
 
@@ -513,7 +518,7 @@ describe("Feedback", () => {
             checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
             console.log("checkBalances", checkBalances)
 
-            expect(checkBalances).to.deep.equal([BigInt(0), BigInt(0), BigInt(0), BigInt(0)])
+            expect(checkBalances).to.deep.equal([BigInt(500), BigInt(350), BigInt(300), BigInt(750)])
 
             console.log("User UTXO", input5)
         })
