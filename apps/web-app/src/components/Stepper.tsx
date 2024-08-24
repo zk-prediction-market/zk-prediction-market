@@ -4,8 +4,6 @@ import { Button, HStack, Text } from "@chakra-ui/react"
 import IconChevronLeft from "../icons/IconChevronLeft"
 import IconChevronRight from "../icons/IconChevronRight"
 
-const TOTAL_STEPS = 2
-
 export type StepperProps = {
     step: number
     onPrevClick?: () => void
@@ -13,6 +11,7 @@ export type StepperProps = {
 }
 
 export default function Stepper({ step, onPrevClick, onNextClick }: StepperProps) {
+    const TOTAL_STEPS = 2
     return (
         <HStack width="full" justify="space-between" pt="6">
             <Button

@@ -28,11 +28,11 @@ const nextConfig = withPWA({
                 ]
             }
         ]
-    },
-    webpack: (config) => {
-        config.externals.push("pino-pretty")
-        return config
     }
+    // webpack: (config) => {
+    //     // config.externals.push("pino-pretty")
+    //     return config
+    // }
 })
 
 export default nextConfig
