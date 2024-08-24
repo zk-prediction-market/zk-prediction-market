@@ -113,6 +113,33 @@ describe("Feedback", () => {
             const transaction = await feedbackContract.verify(a, b, c, input)
             await expect(transaction).not.to.be.reverted
         })
+
+        it("verify No 2", async () => {
+            // 証明生成のためにcircuitに入れるインプット
+            const Input = {
+                secret: "3",
+                nonce: "2",
+                userCurrentBalances: ["0", "0", "0"],
+                userNewBalances: ["999", "999", "999"],
+                poolCurrentBalances: ["333", "333", "33"]
+            }
+            console.log("Input")
+            // 証明生成
+            const { proof, publicSignals } = await groth16.fullProve(
+                Input,
+                "circuits/circuit_js/circuit.wasm",
+                "circuits/circuit_final.zkey"
+            )
+
+            console.log("proof")
+
+            const { a, b, c, input } = await parseGloth16Proof(proof, publicSignals)
+            console.log("input", input)
+
+            // a, b, c はzkSNARKの証明のための標準的な形式
+            const transaction = await feedbackContract.verify(a, b, c, input)
+            await expect(transaction).not.to.be.reverted
+        })
     })
 
     describe("# sendFeedback", () => {
@@ -140,7 +167,8 @@ describe("Feedback", () => {
             const diffAmounts = [
                 parseInt(Input.userNewBalances[0]) - parseInt(Input.userCurrentBalances[0]),
                 parseInt(Input.userNewBalances[1]) - parseInt(Input.userCurrentBalances[1]),
-                parseInt(Input.userNewBalances[2]) - parseInt(Input.userCurrentBalances[2])
+                parseInt(Input.userNewBalances[2]) - parseInt(Input.userCurrentBalances[2]),
+                parseInt(Input.userNewBalances[0]) - parseInt(Input.userCurrentBalances[0])
             ]
 
             console.log("diffAmounts", diffAmounts)
@@ -173,6 +201,7 @@ describe("Feedback", () => {
             let deployerBalanceOfMockCoin
             let userBalanceOfMockCoin
             let poolBalancesOfMockCoin
+            let checkBalances
 
             await (await mockCoinContract.mint(deployer.getAddress(), 1000000)).wait()
 
@@ -184,6 +213,9 @@ describe("Feedback", () => {
 
             poolBalancesOfMockCoin = await mockCoinContract.balanceOf(feedbackContract.getAddress())
             console.log("poolBalancesOfMockCoin", poolBalancesOfMockCoin)
+
+            checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
+            console.log("checkBalances", checkBalances)
 
             await (
                 await feedbackContract.sendFeedback(
@@ -201,7 +233,7 @@ describe("Feedback", () => {
                     },
                     grounIdsIdx,
                     "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", // local account #0
-                    [diffAmounts[0], diffAmounts[1], diffAmounts[2]]
+                    [diffAmounts[0], diffAmounts[1], diffAmounts[2], diffAmounts[3]]
                 )
             ).wait()
 
@@ -235,6 +267,9 @@ describe("Feedback", () => {
 
             poolBalancesOfMockCoin = await mockCoinContract.balanceOf(feedbackContract.getAddress())
             console.log("poolBalancesOfMockCoin", poolBalancesOfMockCoin)
+
+            checkBalances = await feedbackContract.checkBalances(grounIdsIdx)
+            console.log("checkBalances", checkBalances)
         })
     })
 })

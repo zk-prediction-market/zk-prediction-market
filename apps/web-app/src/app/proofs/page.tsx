@@ -91,6 +91,8 @@ export default function ProofsPage() {
 
         await sendFeedback(utxoBalances)
 
+        setDepositAmount("0")
+
         await refetchBalanceOfMockCoin()
     }
 
@@ -118,6 +120,8 @@ export default function ProofsPage() {
         await sendFeedback(utxoBalances)
 
         await refetchBalanceOfMockCoin()
+
+        setBetAmount("0")
     }
 
     const calcUtxo = useCallback(
@@ -252,7 +256,7 @@ export default function ProofsPage() {
                 <HStack width="100%" justify="space-between">
                     <Box width="65%">
                         <Chart />
-                        <Box>aaa</Box>
+                        <Box>{balancesOfMarket?.toString()}</Box>
                     </Box>
                     <Box width="30%">
                         <Heading as="h2" size="xl">
@@ -288,6 +292,7 @@ export default function ProofsPage() {
                                 marginTop="8px"
                                 borderRadius="4px"
                                 border="1px solid #ccc"
+                                value={betAmount}
                                 onChange={(e) => {
                                     setBetAmount(e.target.value)
                                 }}
@@ -353,11 +358,9 @@ export default function ProofsPage() {
                                 marginTop="8px"
                                 borderRadius="4px"
                                 border="1px solid #ccc"
+                                value={depositAmount}
                                 onChange={(e) => {
                                     setDepositAmount(e.target.value)
-
-                                    console.log("depositAmount", depositAmount)
-                                    console.log("balancesOfMarket", balancesOfMarket)
                                 }}
                             />
                             <Box width="100%">

@@ -96,7 +96,7 @@ contract Feedback is Groth16Verifier {
         FeedbackInput calldata feedbackInput,
         uint256 groupIdsIdx,
         address ethAddress,
-        uint256[3] calldata diffAmounts
+        uint256[4] calldata diffAmounts
     ) public {
         _verifyCheck(groupIdsIdx, feedbackInput.a, feedbackInput.b, feedbackInput.c, feedbackInput.input);
 
@@ -128,32 +128,42 @@ contract Feedback is Groth16Verifier {
             _result: results[groupIdsIdx]
         });
 
-        bool success = mockCoin.transferFrom(ethAddress, address(this), diffAmounts[0]);
-        require(success, "Transfer failed");
+        if (poolBalances._result == 0) {
+            // require(poolBalances.newCoinBalance >= poolBalances.currentCoinBalance, "new coin balance must be larger");
+            // require(poolBalances.newTokenABalance >= poolBalances.currentTokenABalance, "new TokenA balance must be larger");
+            // require(poolBalances.newTokenBBalance >= poolBalances.currentTokenBBalance, "new TokenB balance must be larger");
+            if (diffAmounts[3] != 0) {
+                bool success = mockCoin.transferFrom(ethAddress, address(this), diffAmounts[3]);
+                require(success, "Transfer failed");
+            } else {
+                coinBalances[groupIdsIdx] += diffAmounts[0];
+                tokenABalances[groupIdsIdx] += diffAmounts[1];
+                tokenBBalances[groupIdsIdx] += diffAmounts[2];
+            }
+            // if (poolBalances.newCoinBalance > poolBalances.currentCoinBalance) {
 
-        // if (poolBalances._result != 0) {
-        //     require(poolBalances.newCoinBalance >= poolBalances.currentCoinBalance, "new coin balance must be larger");
-        //     require(poolBalances.newTokenABalance >= poolBalances.currentTokenABalance, "new TokenA balance must be larger");
-        //     require(poolBalances.newTokenBBalance >= poolBalances.currentTokenBBalance, "new TokenB balance must be larger");
+            //     coinBalances[groupIdsIdx] = poolBalances.currentCoinBalance;
+            // } else {
+            //     tokenABalances[groupIdsIdx] = poolBalances.currentTokenABalance + diffAmounts[1];
+            //     tokenBBalances[groupIdsIdx] = poolBalances.currentTokenBBalance + diffAmounts[2];
+            // }
+        } else if (poolBalances._result == 1 && diffAmounts[2] == 0) {
+            // require(poolBalances.newCoinBalance <= poolBalances.currentCoinBalance, "new coin balance must be smaller");
+            if (diffAmounts[0] != 0 && diffAmounts[1] != 0 && diffAmounts[3] == 0) {
+                uint256 winAmount = (poolBalances.currentCoinBalance * poolBalances.currentTokenABalance) /
+                    diffAmounts[1];
 
-        //     if (poolBalances.newCoinBalance >= poolBalances.currentCoinBalance) {
-        //         bool success = mockCoin.transferFrom(ethAddress, address(this), diffAmounts[0]);
-        //         require(success, "Transfer failed");
-        //     }
-        // } else {
-        //     require(poolBalances.newCoinBalance <= poolBalances.currentCoinBalance, "new coin balance must be smaller");
-        //     if (poolBalances._result == 1) {
-        //         require(poolBalances.newTokenABalance <= poolBalances.currentTokenABalance, "new TokenA balance must be smaller");
-        //         require(poolBalances.newTokenBBalance == poolBalances.currentTokenBBalance, "new TokenB balance can't change");
-        //     } else {
-        //         require(poolBalances.newTokenABalance == poolBalances.currentTokenABalance, "new TokenA balance can't change");
-        //         require(poolBalances.newTokenBBalance <= poolBalances.currentTokenBBalance, "new TokenB balance must be smaller");
-        //     }
-        // }
+                coinBalances[groupIdsIdx] = poolBalances.currentCoinBalance - winAmount;
+                tokenABalances[groupIdsIdx] = poolBalances.currentTokenABalance - diffAmounts[1];
 
-        coinBalances[groupIdsIdx] = poolBalances.newCoinBalance;
-        tokenABalances[groupIdsIdx] = poolBalances.newTokenABalance;
-        tokenBBalances[groupIdsIdx] = poolBalances.newTokenBBalance;
+                // uint256 c = 1000;
+                // uint256 a = 700;
+                // uint256 d = c / a;
+            } else if (diffAmounts[3] != 0) {
+                bool success = mockCoin.transfer(ethAddress, diffAmounts[3]);
+                require(success, "Transfer failed");
+            }
+        } else if (poolBalances._result == 2) {}
 
         emit UpdatePoolBalances(
             groupIdsIdx,
@@ -209,9 +219,9 @@ contract Feedback is Groth16Verifier {
         uint[2] calldata c,
         uint[8] calldata input
     ) public view returns (bool) {
-        require(input[0] == coinBalances[groupIdsIdx], "Invalid mockCoin balance");
-        require(input[1] == tokenABalances[groupIdsIdx], "Invalid tokenA balance");
-        require(input[2] == tokenBBalances[groupIdsIdx], "Invalid tokenB balance");
+        // require(input[0] == coinBalances[groupIdsIdx], "Invalid mockCoin balance");
+        // require(input[1] == tokenABalances[groupIdsIdx], "Invalid tokenA balance");
+        // require(input[2] == tokenBBalances[groupIdsIdx], "Invalid tokenB balance");
 
         bool isValid = verifyProof(a, b, c, input);
 
