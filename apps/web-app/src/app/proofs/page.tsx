@@ -105,18 +105,15 @@ export default function ProofsPage() {
         let newUserTokenBBalance: string
         if (flag) {
             newUserTokenABalance = (parseInt(userCurrentBalances[1]) + parseInt(betAmount)).toString()
-            newUserTokenBBalance = (parseInt(userCurrentBalances[2])).toString()
+            newUserTokenBBalance = parseInt(userCurrentBalances[2]).toString()
         } else {
-            newUserTokenABalance = (parseInt(userCurrentBalances[1])).toString()
+            newUserTokenABalance = parseInt(userCurrentBalances[1]).toString()
             newUserTokenBBalance = (parseInt(userCurrentBalances[2]) + parseInt(betAmount)).toString()
         }
 
         console.log("userNewBalances", [newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance])
 
-        const utxoBalances = await calcUtxo(
-            [newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance],
-            address
-        )
+        const utxoBalances = await calcUtxo([newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance], address)
 
         await sendFeedback(utxoBalances)
 
@@ -255,9 +252,7 @@ export default function ProofsPage() {
                 <HStack width="100%" justify="space-between">
                     <Box width="65%">
                         <Chart />
-                        <Box>
-                            aaa
-                        </Box>
+                        <Box>aaa</Box>
                     </Box>
                     <Box width="30%">
                         <Heading as="h2" size="xl">
