@@ -50,9 +50,7 @@ export default function ProofsPage() {
 
     const { sendTx: sendTxSetResult, writeResult: WriteResultSetResult } = useWriteFeedbackContract("setResult")
 
-    const { data: resultOfMarket, refetch: refetchResultOfMarket } = useReadFeedbackContract("results", [
-        groupIdsIdx
-    ])
+    const { data: resultOfMarket, refetch: refetchResultOfMarket } = useReadFeedbackContract("results", [groupIdsIdx])
 
     const { sendTx: sendTxSetBalances, writeResult: WriteSetBalancesResult } = useWriteFeedbackContract("setBalances")
 
@@ -145,15 +143,15 @@ export default function ProofsPage() {
         let userCurrentBalances: string[] = JSON.parse(
             localStorage.getItem(`userCurrentBalances${groupIdsIdx}`) || "[]"
         )
-    
+
         const result = resultOfMarket! as any
-    
+
         const newUserCoinBalance = (
             parseInt(userCurrentBalances[0]) +
             (Number((balancesOfMarket as any)[0]) * parseInt(userCurrentBalances[result])) /
-            Number((balancesOfMarket as any)[result])
+                Number((balancesOfMarket as any)[result])
         ).toString()
-    
+
         let newUserTokenABalance: string = "0"
         let newUserTokenBBalance: string = "0"
         if (result == 1) {
@@ -163,15 +161,15 @@ export default function ProofsPage() {
             newUserTokenABalance = parseInt(userCurrentBalances[1]).toString()
             newUserTokenBBalance = (parseInt(userCurrentBalances[2]) - parseInt(betAmount)).toString()
         }
-    
+
         console.log("userNewBalances", [newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance])
-    
+
         const utxoBalances = await calcUtxo([newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance], address)
-    
+
         await sendFeedback(utxoBalances)
-    
+
         await refetchBalanceOfMockCoin()
-    
+
         setBetAmount("0")
     }
 
@@ -179,28 +177,24 @@ export default function ProofsPage() {
         let userCurrentBalances: string[] = JSON.parse(
             localStorage.getItem(`userCurrentBalances${groupIdsIdx}`) || "[]"
         )
-    
+
         const result = resultOfMarket! as any
-    
-        const newUserCoinBalance = (
-            parseInt(userCurrentBalances[0]) - parseInt(withdrawAmount)
-        ).toString()
-    
+
+        const newUserCoinBalance = (parseInt(userCurrentBalances[0]) - parseInt(withdrawAmount)).toString()
+
         let newUserTokenABalance: string = userCurrentBalances[1]
         let newUserTokenBBalance: string = userCurrentBalances[2]
-    
+
         console.log("userNewBalances", [newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance])
-    
+
         const utxoBalances = await calcUtxo([newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance], address)
-    
+
         await sendFeedback(utxoBalances)
-    
+
         await refetchBalanceOfMockCoin()
-    
+
         setBetAmount("0")
     }
-
-
 
     const calcUtxo = useCallback(
         async (userNewBalances: string[], ethAddress: `0x${string}` | undefined) => {
@@ -214,25 +208,21 @@ export default function ProofsPage() {
             if (result == 0) {
                 const diffA = Math.abs(parseInt(userNewBalances[1]) - parseInt(userCurrentBalances[1]))
                 const diffB = Math.abs(parseInt(userNewBalances[2]) - parseInt(userCurrentBalances[2]))
-                const diffC = diffA == 0 && diffB == 0 ? Math.abs(parseInt(userNewBalances[0]) - parseInt(userCurrentBalances[0])) : 0
-    
-                diffAmounts = [
-                    diffA + diffB,
-                    diffA,
-                    diffB,
-                    diffC
-                ]
+                const diffC =
+                    diffA == 0 && diffB == 0
+                        ? Math.abs(parseInt(userNewBalances[0]) - parseInt(userCurrentBalances[0]))
+                        : 0
+
+                diffAmounts = [diffA + diffB, diffA, diffB, diffC]
             } else {
                 const diffA = Math.abs(parseInt(userCurrentBalances[1]) - parseInt(userNewBalances[1]))
                 const diffB = Math.abs(parseInt(userCurrentBalances[2]) - parseInt(userNewBalances[2]))
-                const diffC = diffA == 0 && diffB == 0 ? Math.abs(parseInt(userCurrentBalances[0]) - parseInt(userNewBalances[0])) : 0
-    
-                diffAmounts = [
-                    diffA + diffB,
-                    diffA,
-                    diffB,
-                    diffC
-                ]
+                const diffC =
+                    diffA == 0 && diffB == 0
+                        ? Math.abs(parseInt(userCurrentBalances[0]) - parseInt(userNewBalances[0]))
+                        : 0
+
+                diffAmounts = [diffA + diffB, diffA, diffB, diffC]
             }
             console.log("diffAmounts", diffAmounts)
 
@@ -426,23 +416,19 @@ export default function ProofsPage() {
                                 </Button>
                             </Box>
                         </HStack>
-                            <Box width="100%">
-                                <Button
-                                    w="full"
-                                    isDisabled={_loading}
-                                    onClick={() => getReward()}
-                                >
-                                    Get Reward
-                                </Button>
-                                <Button
-                                    mt="5"
-                                    w="full"
-                                    isDisabled={_loading}
-                                    onClick={() => sendTxSetResult([groupIdsIdx, 1])}
-                                >
-                                    Win A Result (for demo)
-                                </Button>
-                            </Box>
+                        <Box width="100%">
+                            <Button w="full" isDisabled={_loading} onClick={() => getReward()}>
+                                Get Reward
+                            </Button>
+                            <Button
+                                mt="5"
+                                w="full"
+                                isDisabled={_loading}
+                                onClick={() => sendTxSetResult([groupIdsIdx, 1])}
+                            >
+                                Win A Result (for demo)
+                            </Button>
+                        </Box>
                         <Box mt="8">
                             <Text fontWeight="bold" fontSize="lg">
                                 Your Secret Balance

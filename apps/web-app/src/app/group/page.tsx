@@ -6,13 +6,13 @@ import IconRefreshLine from "@/icons/IconRefreshLine"
 import { Box, Button, Divider, Heading, HStack, Link, Text, useBoolean, VStack } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import Feedback from "../../../contract-artifacts/Feedback.json"
-import { ethers } from "ethers"
+// import Feedback from "../../../contract-artifacts/Feedback.json"
+// import { ethers } from "ethers"
 import useSemaphoreIdentity from "@/hooks/useSemaphoreIdentity"
-import proofTest from "../../examples/proofTest.json"
+// import proofTest from "../../examples/proofTest.json"
 import SmallPageContainer from "@/components/SmallPageContainer"
-import { prepareSendUtxo } from "@/utils/prepareSendUtxo"
-import { Group } from "@semaphore-protocol/core"
+// import { prepareSendUtxo } from "@/utils/prepareSendUtxo"
+// import { Group } from "@semaphore-protocol/core"
 
 const groupIdsIdx = 0
 
@@ -81,29 +81,29 @@ export default function GroupsPage() {
         [_identity, _users]
     )
 
-    async function getDefault() {
-        const { prove, verify } = await import("tlsn-js")
+    // async function getDefault() {
+    //     // const { prove, verify } = await import("tlsn-js")
 
-        // console.time("prove")
-        // const proof = await prove("https://swapi.dev/api/people/1", {
-        //     method: "GET",
-        //     maxTranscriptSize: 16384,
-        //     notaryUrl: "https://notary.pse.dev/v0.1.0-alpha.5",
-        //     websocketProxyUrl: "wss://notary.pse.dev/proxy?token=swapi.dev"
-        // })
-        // console.timeEnd("prove")
+    //     // console.time("prove")
+    //     // const proof = await prove("https://swapi.dev/api/people/1", {
+    //     //     method: "GET",
+    //     //     maxTranscriptSize: 16384,
+    //     //     notaryUrl: "https://notary.pse.dev/v0.1.0-alpha.5",
+    //     //     websocketProxyUrl: "wss://notary.pse.dev/proxy?token=swapi.dev"
+    //     // })
+    //     // console.timeEnd("prove")
 
-        const proofTmp = proofTest
+    //     const proofTmp = proofTest
 
-        console.log("proof", proofTmp)
-        setProof(proofTmp)
+    //     console.log("proof", proofTmp)
+    //     setProof(proofTmp)
 
-        console.time("verify")
-        const result = await verify(proofTmp)
-        console.timeEnd("verify")
+    //     console.time("verify")
+    //     const result = await verify(proofTmp)
+    //     console.timeEnd("verify")
 
-        console.log(result)
-    }
+    //     console.log(result)
+    // }
 
     return (
         <>
@@ -116,7 +116,7 @@ export default function GroupsPage() {
 
                 <Divider pt="5" borderColor="gray.500" />
 
-                <button onClick={getDefault}>Get</button>
+                {/* <button onClick={getDefault}>Get</button> */}
 
                 <HStack py="5" justify="space-between">
                     <Text fontWeight="bold" fontSize="lg">
