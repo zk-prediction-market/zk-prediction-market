@@ -19,7 +19,7 @@ import { useAccount } from "wagmi"
 import { abi } from "../../../contract-artifacts/MockCoin.json"
 import { useReadMockCoinContract, useWriteMockCoinContract } from "@/hooks/useMockCoin"
 import { generateGroth16Proof } from "@/utils/generateGroth16Proof"
-import { useReadFeedbackContract } from "@/hooks/useFeedback"
+import { useReadFeedbackContract, useWriteFeedbackContract } from "@/hooks/useFeedback"
 
 const groupIdsIdx = 0
 
@@ -33,6 +33,9 @@ export default function ProofsPage() {
     const [_userOnchainBlanace, setUserOnchainBlanace] = useState<string>("")
     const [depositAmount, setDepositAmount] = useState<string>("0")
     const [betAmount, setBetAmount] = useState<string>("0")
+    const [withdrawAmount, setWithdrawAmount] = useState<string>("0")
+    const [sendFeedBackNonce, setSendFeedBackNonce] = useState<number>(0)
+    const [withdrawEthAddress, setWithdrawEthAddress] = useState<string>("")
 
     const { address } = useAccount()
 
@@ -44,6 +47,14 @@ export default function ProofsPage() {
     ])
 
     const { sendTx: sendTxMockCoin, writeResult: writeResultMockCoin } = useWriteMockCoinContract("mint")
+
+    const { sendTx: sendTxSetResult, writeResult: WriteResultSetResult } = useWriteFeedbackContract("setResult")
+
+    const { data: resultOfMarket, refetch: refetchResultOfMarket } = useReadFeedbackContract("results", [
+        groupIdsIdx
+    ])
+
+    const { sendTx: sendTxSetBalances, writeResult: WriteSetBalancesResult } = useWriteFeedbackContract("setBalances")
 
     useEffect(() => {
         const userCurrentBalances: string[] = JSON.parse(
@@ -65,13 +76,19 @@ export default function ProofsPage() {
         if (userCurrentBalances.length !== 0) {
             setUserCurrentBalances(userCurrentBalances)
         }
-    }, [_feedback])
+    }, [_feedback, sendFeedBackNonce])
 
     useEffect(() => {
         if (writeResultMockCoin.data) {
             refetchBalanceOfMockCoin()
         }
     }, [writeResultMockCoin.data, refetchBalanceOfMockCoin])
+
+    useEffect(() => {
+        if (WriteResultSetResult.data) {
+            refetchResultOfMarket()
+        }
+    }, [WriteResultSetResult.data, refetchResultOfMarket])
 
     const feedback = useMemo(() => [..._feedback].reverse(), [_feedback])
 
@@ -124,17 +141,100 @@ export default function ProofsPage() {
         setBetAmount("0")
     }
 
+    const getReward = async () => {
+        let userCurrentBalances: string[] = JSON.parse(
+            localStorage.getItem(`userCurrentBalances${groupIdsIdx}`) || "[]"
+        )
+    
+        const result = resultOfMarket! as any
+    
+        const newUserCoinBalance = (
+            parseInt(userCurrentBalances[0]) +
+            (Number((balancesOfMarket as any)[0]) * parseInt(userCurrentBalances[result])) /
+            Number((balancesOfMarket as any)[result])
+        ).toString()
+    
+        let newUserTokenABalance: string = "0"
+        let newUserTokenBBalance: string = "0"
+        if (result == 1) {
+            newUserTokenABalance = (parseInt(userCurrentBalances[1]) - parseInt(betAmount)).toString()
+            newUserTokenBBalance = parseInt(userCurrentBalances[2]).toString()
+        } else if (result == 2) {
+            newUserTokenABalance = parseInt(userCurrentBalances[1]).toString()
+            newUserTokenBBalance = (parseInt(userCurrentBalances[2]) - parseInt(betAmount)).toString()
+        }
+    
+        console.log("userNewBalances", [newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance])
+    
+        const utxoBalances = await calcUtxo([newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance], address)
+    
+        await sendFeedback(utxoBalances)
+    
+        await refetchBalanceOfMockCoin()
+    
+        setBetAmount("0")
+    }
+
+    const sendWithdraw = async () => {
+        let userCurrentBalances: string[] = JSON.parse(
+            localStorage.getItem(`userCurrentBalances${groupIdsIdx}`) || "[]"
+        )
+    
+        const result = resultOfMarket! as any
+    
+        const newUserCoinBalance = (
+            parseInt(userCurrentBalances[0]) - parseInt(withdrawAmount)
+        ).toString()
+    
+        let newUserTokenABalance: string = userCurrentBalances[1]
+        let newUserTokenBBalance: string = userCurrentBalances[2]
+    
+        console.log("userNewBalances", [newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance])
+    
+        const utxoBalances = await calcUtxo([newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance], address)
+    
+        await sendFeedback(utxoBalances)
+    
+        await refetchBalanceOfMockCoin()
+    
+        setBetAmount("0")
+    }
+
+
+
     const calcUtxo = useCallback(
         async (userNewBalances: string[], ethAddress: `0x${string}` | undefined) => {
             let userCurrentBalances: string[] = JSON.parse(
                 localStorage.getItem(`userCurrentBalances${groupIdsIdx}`) || "[]"
             )
 
-            const diffAmounts = [
-                Math.abs(parseInt(userNewBalances[0]) - parseInt(userCurrentBalances[0])),
-                Math.abs(parseInt(userNewBalances[1]) - parseInt(userCurrentBalances[1])),
-                Math.abs(parseInt(userNewBalances[2]) - parseInt(userCurrentBalances[2]))
-            ]
+            let diffAmounts: number[] = []
+
+            const result = resultOfMarket! as any
+            if (result == 0) {
+                const diffA = Math.abs(parseInt(userNewBalances[1]) - parseInt(userCurrentBalances[1]))
+                const diffB = Math.abs(parseInt(userNewBalances[2]) - parseInt(userCurrentBalances[2]))
+                const diffC = diffA == 0 && diffB == 0 ? Math.abs(parseInt(userNewBalances[0]) - parseInt(userCurrentBalances[0])) : 0
+    
+                diffAmounts = [
+                    diffA + diffB,
+                    diffA,
+                    diffB,
+                    diffC
+                ]
+            } else {
+                const diffA = Math.abs(parseInt(userCurrentBalances[1]) - parseInt(userNewBalances[1]))
+                const diffB = Math.abs(parseInt(userCurrentBalances[2]) - parseInt(userNewBalances[2]))
+                const diffC = diffA == 0 && diffB == 0 ? Math.abs(parseInt(userCurrentBalances[0]) - parseInt(userNewBalances[0])) : 0
+    
+                diffAmounts = [
+                    diffA + diffB,
+                    diffA,
+                    diffB,
+                    diffC
+                ]
+            }
+            console.log("diffAmounts", diffAmounts)
 
             await refetchBalancesOfMarket()
 
@@ -238,6 +338,9 @@ export default function ProofsPage() {
                     if (feedbackSent) {
                         addFeedback(feedback)
 
+                        await refetchBalancesOfMarket()
+                        setSendFeedBackNonce(sendFeedBackNonce + 1)
+
                         localStorage.setItem(`userCurrentBalances${groupIdsIdx}`, JSON.stringify(Input.userNewBalances))
                     }
                 } catch (error) {
@@ -257,6 +360,7 @@ export default function ProofsPage() {
                     <Box width="65%">
                         <Chart />
                         <Box>{balancesOfMarket?.toString()}</Box>
+                        <Box>{resultOfMarket?.toString()}</Box>
                     </Box>
                     <Box width="30%">
                         <Heading as="h2" size="xl">
@@ -322,6 +426,23 @@ export default function ProofsPage() {
                                 </Button>
                             </Box>
                         </HStack>
+                            <Box width="100%">
+                                <Button
+                                    w="full"
+                                    isDisabled={_loading}
+                                    onClick={() => getReward()}
+                                >
+                                    Get Reward
+                                </Button>
+                                <Button
+                                    mt="5"
+                                    w="full"
+                                    isDisabled={_loading}
+                                    onClick={() => sendTxSetResult([groupIdsIdx, 1])}
+                                >
+                                    Win A Result (for demo)
+                                </Button>
+                            </Box>
                         <Box mt="8">
                             <Text fontWeight="bold" fontSize="lg">
                                 Your Secret Balance
@@ -378,7 +499,7 @@ export default function ProofsPage() {
                                             alert("Please connect your wallet.")
                                             return
                                         } else {
-                                            sendTxMockCoin([address, ethers.parseEther("100")])
+                                            sendTxMockCoin([address, 10000])
                                         }
                                     }}
                                 >
@@ -391,12 +512,16 @@ export default function ProofsPage() {
                             <Box width="100%">
                                 <Text mt="2">Withdraw Eth Address</Text>
                                 <Input
-                                    type="number"
+                                    type="string"
                                     width="100%"
                                     padding="8px"
                                     marginTop="8px"
                                     borderRadius="4px"
                                     border="1px solid #ccc"
+                                    value={withdrawEthAddress}
+                                    onChange={(e) => {
+                                        setWithdrawEthAddress(e.target.value)
+                                    }}
                                 />
                                 <Text mt="2">Amount</Text>
                                 <Input
@@ -406,8 +531,12 @@ export default function ProofsPage() {
                                     marginTop="8px"
                                     borderRadius="4px"
                                     border="1px solid #ccc"
+                                    value={withdrawAmount}
+                                    onChange={(e) => {
+                                        setWithdrawAmount(e.target.value)
+                                    }}
                                 />
-                                <Button mt="4" w="full" isDisabled={_loading} onClick={sendDeposit}>
+                                <Button mt="4" w="full" isDisabled={_loading} onClick={sendWithdraw}>
                                     Withdraw to Eth Address
                                 </Button>
                             </Box>

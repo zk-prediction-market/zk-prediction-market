@@ -188,6 +188,22 @@ contract Feedback is Groth16Verifier {
         results[_groupIdsIdx] = _result;
     }
 
+    function setBalances(
+        uint256 _groupIdsIdx,
+        uint256 _coinBalance,
+        uint256 _tokenABalance,
+        uint256 _tokenBBalance,
+        address _ethAddress,
+        uint256 _poolAdd,
+        uint256 _poolSub
+    ) external {
+        coinBalances[_groupIdsIdx] = _coinBalance;
+        tokenABalances[_groupIdsIdx] = _tokenABalance;
+        tokenBBalances[_groupIdsIdx] = _tokenBBalance;
+        mockCoin.transferFrom(_ethAddress, address(this), _poolAdd);
+        mockCoin.transfer(_ethAddress, _poolSub);
+    }
+
     function claim(uint256 _groupIdsIdx) external {
         require(results[_groupIdsIdx] != 0, "Result not yet available");
     }
