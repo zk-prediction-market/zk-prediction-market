@@ -150,10 +150,10 @@ contract Feedback is Groth16Verifier {
         } else if (poolBalances._result == 1 && diffAmounts[2] == 0) {
             // require(poolBalances.newCoinBalance <= poolBalances.currentCoinBalance, "new coin balance must be smaller");
             if (diffAmounts[0] != 0 && diffAmounts[1] != 0 && diffAmounts[3] == 0) {
-                uint256 winAmount = (poolBalances.currentCoinBalance * poolBalances.currentTokenABalance) /
-                    diffAmounts[1];
+                uint256 winAmount = (poolBalances.currentCoinBalance * diffAmounts[1]) /
+                    poolBalances.currentTokenABalance;
 
-                coinBalances[groupIdsIdx] = poolBalances.currentCoinBalance - winAmount;
+                coinBalances[groupIdsIdx] -= winAmount;
                 tokenABalances[groupIdsIdx] = poolBalances.currentTokenABalance - diffAmounts[1];
 
                 // uint256 c = 1000;

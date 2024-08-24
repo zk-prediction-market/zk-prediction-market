@@ -146,11 +146,19 @@ export default function ProofsPage() {
 
         const result = resultOfMarket! as any
 
-        const newUserCoinBalance = (
-            parseInt(userCurrentBalances[0]) +
-            (Number((balancesOfMarket as any)[0]) * parseInt(userCurrentBalances[result])) /
-                Number((balancesOfMarket as any)[result])
-        ).toString()
+        console.log("## result", result)
+
+        console.log("## balancesOfMarket", balancesOfMarket)
+
+        console.log("## userCurrentBalances", userCurrentBalances)
+
+        console.log("## betAmount", betAmount)
+
+        const winAmount = Math.floor(
+            (Number((balancesOfMarket as any)[0]) * Number(betAmount)) / Number((balancesOfMarket as any)[result])
+        )
+
+        const newUserCoinBalance = (parseInt(userCurrentBalances[0]) + winAmount).toString()
 
         let newUserTokenABalance: string = "0"
         let newUserTokenBBalance: string = "0"
@@ -162,7 +170,11 @@ export default function ProofsPage() {
             newUserTokenBBalance = (parseInt(userCurrentBalances[2]) - parseInt(betAmount)).toString()
         }
 
+        console.log("=======================================")
+
         console.log("userNewBalances", [newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance])
+
+        console.log("=======================================")
 
         const utxoBalances = await calcUtxo([newUserCoinBalance, newUserTokenABalance, newUserTokenBBalance], address)
 
