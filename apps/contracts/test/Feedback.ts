@@ -173,9 +173,9 @@ describe("Feedback", () => {
             const Input = {
                 secret: "1",
                 nonce: "1",
-                userCurrentBalances: ["999", "999", "999"],
+                userCurrentBalances: ["0", "0", "0"],
                 userNewBalances: ["31", "32", "33"],
-                diff: ["0", "0", "0", "0"],
+                diff: ["0", "0", "0", "31"],
                 poolCurrentBalances: ["21", "22", "23"]
             }
             // 証明生成
@@ -252,8 +252,7 @@ describe("Feedback", () => {
                         input: input
                     },
                     grounIdsIdx,
-                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", // local account #0
-                    [diffAmounts[0], diffAmounts[1], diffAmounts[2], diffAmounts[3]]
+                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
                 )
             ).wait()
 

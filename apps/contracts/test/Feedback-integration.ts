@@ -133,17 +133,9 @@ describe("Feedback", () => {
                 nonce: "0",
                 userCurrentBalances: ["0", "0", "0"],
                 userNewBalances: ["1000", "0", "0"],
-                diff: ["0", "0", "0", "0"],
+                diff: ["0", "0", "0", "1000"],
                 poolCurrentBalances: ["0", "0", "0"]
             }
-
-            console.log("Input", Input)
-            // 証明生成
-            const { proof, publicSignals } = await groth16.fullProve(
-                Input,
-                "circuits/circuit_js/circuit.wasm",
-                "circuits/circuit_final.zkey"
-            )
 
             const diffA = parseInt(Input.userNewBalances[1]) - parseInt(Input.userCurrentBalances[1])
             const diffB = parseInt(Input.userNewBalances[2]) - parseInt(Input.userCurrentBalances[2])
@@ -156,6 +148,16 @@ describe("Feedback", () => {
             ]
 
             console.log("diffAmounts", diffAmounts)
+
+            // Input.diff = diffAmounts.map((diff) => diff.toString())
+
+            console.log("Input", Input)
+            // 証明生成
+            const { proof, publicSignals } = await groth16.fullProve(
+                Input,
+                "circuits/circuit_js/circuit.wasm",
+                "circuits/circuit_final.zkey"
+            )
 
             const { a, b, c, input } = await parseGloth16Proof(proof, publicSignals)
             console.log("input", input)
@@ -184,8 +186,7 @@ describe("Feedback", () => {
                         input: input
                     },
                     grounIdsIdx,
-                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", // local account #0
-                    [diffAmounts[0], diffAmounts[1], diffAmounts[2], diffAmounts[3]]
+                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
                 )
             ).wait()
 
@@ -226,14 +227,6 @@ describe("Feedback", () => {
                 poolCurrentBalances: ["0", "0", "0"]
             }
 
-            console.log("Input", Input)
-            // 証明生成
-            const { proof, publicSignals } = await groth16.fullProve(
-                Input,
-                "circuits/circuit_js/circuit.wasm",
-                "circuits/circuit_final.zkey"
-            )
-
             const diffA = parseInt(Input.userNewBalances[1]) - parseInt(Input.userCurrentBalances[1])
             console.log("debug")
             const diffB = parseInt(Input.userNewBalances[2]) - parseInt(Input.userCurrentBalances[2])
@@ -241,6 +234,16 @@ describe("Feedback", () => {
             const diffAmounts = [diffA + diffB, diffA, diffB, 0]
 
             console.log("diffAmounts", diffAmounts)
+
+            Input.diff = diffAmounts.map((diff) => diff.toString())
+
+            console.log("Input", Input)
+            // 証明生成
+            const { proof, publicSignals } = await groth16.fullProve(
+                Input,
+                "circuits/circuit_js/circuit.wasm",
+                "circuits/circuit_final.zkey"
+            )
 
             const { a, b, c, input: input2 } = await parseGloth16Proof(proof, publicSignals)
             console.log("input", input2)
@@ -272,8 +275,7 @@ describe("Feedback", () => {
                         input: input2
                     },
                     grounIdsIdx,
-                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", // local account #0
-                    [diffAmounts[0], diffAmounts[1], diffAmounts[2], diffAmounts[3]]
+                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
                 )
             ).wait()
 
@@ -306,14 +308,6 @@ describe("Feedback", () => {
                 poolCurrentBalances: ["700", "700", "0"]
             }
 
-            console.log("Input", Input3)
-            // 証明生成
-            const { proof, publicSignals } = await groth16.fullProve(
-                Input3,
-                "circuits/circuit_js/circuit.wasm",
-                "circuits/circuit_final.zkey"
-            )
-
             const diffA = parseInt(Input3.userNewBalances[1]) - parseInt(Input3.userCurrentBalances[1])
             console.log("debug")
             const diffB = parseInt(Input3.userNewBalances[2]) - parseInt(Input3.userCurrentBalances[2])
@@ -321,6 +315,16 @@ describe("Feedback", () => {
             const diffAmounts = [diffA + diffB, diffA, diffB, 0]
 
             console.log("diffAmounts", diffAmounts)
+
+            Input3.diff = diffAmounts.map((diff) => diff.toString())
+
+            console.log("Input", Input3)
+            // 証明生成
+            const { proof, publicSignals } = await groth16.fullProve(
+                Input3,
+                "circuits/circuit_js/circuit.wasm",
+                "circuits/circuit_final.zkey"
+            )
 
             const { a, b, c, input: input3 } = await parseGloth16Proof(proof, publicSignals)
             console.log("input3", input3)
@@ -352,8 +356,7 @@ describe("Feedback", () => {
                         input: input3
                     },
                     grounIdsIdx,
-                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", // local account #0
-                    [diffAmounts[0], diffAmounts[1], diffAmounts[2], diffAmounts[3]]
+                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
                 )
             ).wait()
 
@@ -411,6 +414,18 @@ describe("Feedback", () => {
                 diff: ["0", "0", "0", "0"],
                 poolCurrentBalances: ["1000", "700", "300"]
             }
+
+            const diffA2 = parseInt(Input4.userCurrentBalances[1]) - parseInt(Input4.userNewBalances[1])
+
+            console.log("diffA2", diffA2)
+
+            const diffAmounts = [diffA2, diffA2, 0, 0]
+
+            console.log("diffAmounts", diffAmounts)
+
+            console.log("diffA2", diffA2)
+
+            Input4.diff = diffAmounts.map((diff) => diff.toString())
             console.log("Input", Input4)
             // 証明生成
             const { proof, publicSignals } = await groth16.fullProve(
@@ -423,14 +438,6 @@ describe("Feedback", () => {
 
             console.log("parseInt(Input4.userCurrentBalances[1])", parseInt(Input4.userCurrentBalances[1]))
             console.log("parseInt(Input4.userNewBalances[1])", parseInt(Input4.userNewBalances[1]))
-
-            const diffA2 = parseInt(Input4.userCurrentBalances[1]) - parseInt(Input4.userNewBalances[1])
-
-            console.log("diffA2", diffA2)
-
-            const diffAmounts = [diffA2, diffA2, 0, 0]
-
-            console.log("diffAmounts", diffAmounts)
 
             const { a, b, c, input: input4 } = await parseGloth16Proof(proof, publicSignals)
             console.log("input4", input4)
@@ -468,8 +475,7 @@ describe("Feedback", () => {
                         input: input4
                     },
                     grounIdsIdx,
-                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", // local account #0
-                    [diffAmounts[0], diffAmounts[1], diffAmounts[2], diffAmounts[3]]
+                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
                 )
             ).wait()
             console.log("============")
@@ -510,12 +516,6 @@ describe("Feedback", () => {
                 poolCurrentBalances: ["500", "350", "300"]
             }
             console.log("Input", Input5)
-            // 証明生成
-            const { proof, publicSignals } = await groth16.fullProve(
-                Input5,
-                "circuits/circuit_js/circuit.wasm",
-                "circuits/circuit_final.zkey"
-            )
 
             console.log("Input5", Input5)
 
@@ -529,6 +529,14 @@ describe("Feedback", () => {
             const diffAmounts = [0, 0, 0, diffC]
 
             console.log("diffAmounts", diffAmounts)
+
+            Input5.diff = diffAmounts.map((diff) => diff.toString())
+            // 証明生成
+            const { proof, publicSignals } = await groth16.fullProve(
+                Input5,
+                "circuits/circuit_js/circuit.wasm",
+                "circuits/circuit_final.zkey"
+            )
 
             const { a, b, c, input: input5 } = await parseGloth16Proof(proof, publicSignals)
             console.log("input5", input5)
@@ -563,8 +571,7 @@ describe("Feedback", () => {
                         input: input5
                     },
                     grounIdsIdx,
-                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", // local account #0
-                    [diffAmounts[0], diffAmounts[1], diffAmounts[2], diffAmounts[3]]
+                    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
                 )
             ).wait()
             // .to.emit(feedbackContract, "UpdatePoolBalances")

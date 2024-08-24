@@ -326,7 +326,6 @@ export default function ProofsPage() {
                             scope,
                             groupIdsIdx,
                             ethAddress: utxoBalances.ethAddress,
-                            diffAmounts: utxoBalances.diffAmounts,
                             points,
                             proof,
                             publicSignals
