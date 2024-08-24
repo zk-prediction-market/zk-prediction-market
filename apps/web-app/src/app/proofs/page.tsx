@@ -332,7 +332,7 @@ export default function ProofsPage() {
 
                         localStorage.setItem(`userCurrentBalances${groupIdsIdx}`, JSON.stringify(Input.userNewBalances))
                     }
-                    setSendFeedBackNonce(prevNonce => prevNonce + 1)
+                    setSendFeedBackNonce((prevNonce) => prevNonce + 1)
                 } catch (error) {
                     console.error(error)
                 } finally {

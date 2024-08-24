@@ -28,7 +28,7 @@ const nextConfig = withPWA({
                 ]
             }
         ]
-    },
+    }
     // webpack: (config) => {
     //     // config.externals.push("pino-pretty")
     //     return config
